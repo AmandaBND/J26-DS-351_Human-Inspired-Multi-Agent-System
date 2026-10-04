@@ -7,6 +7,13 @@ from .security_event import (
     SecurityEvent,
 )
 
+from .experiment_scenario import (
+    ExperimentScenario,
+    MonitorBehaviorMode,
+    MonitorConfig,
+)
+
+
 __all__ = [
     "AgentState",
     "AttackType",
@@ -14,4 +21,7 @@ __all__ = [
     "MonitorDecision",
     "SecurityDecision",
     "SecurityEvent",
+    "ExperimentScenario",
+    "MonitorBehaviorMode",
+    "MonitorConfig",
 ]

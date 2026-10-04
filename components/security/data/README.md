@@ -28,3 +28,17 @@ The processed files will later be used for:
 Real organizational data must not be committed to this repository.
 
 Any future Metropolitan data must be handled separately according to organizational approval, anonymization and ethical requirements.
+
+## Compromised Security-Monitor Scenarios
+
+`compromised_monitor_scenarios.json` contains controlled experiments in which the reliability of one or more security monitors is deliberately changed.
+
+The current scenarios cover:
+
+- false approval of malicious activity;
+- false blocking of legitimate activity;
+- conflicting security-monitor decisions;
+- multiple compromised monitors;
+- unavailable security monitors.
+
+The monitor state and expected final security decision are known in advance so that later trust-estimation and decision-fusion methods can be evaluated against ground truth.
