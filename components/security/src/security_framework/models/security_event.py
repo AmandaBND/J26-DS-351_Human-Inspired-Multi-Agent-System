@@ -15,6 +15,7 @@ class EventType(str, Enum):
     USER_INPUT = "USER_INPUT"
     AGENT_MESSAGE = "AGENT_MESSAGE"
     TOOL_REQUEST = "TOOL_REQUEST"
+    TOOL_RESPONSE = "TOOL_RESPONSE"
     RESOURCE_ACCESS = "RESOURCE_ACCESS"
     OUTPUT = "OUTPUT"
 
@@ -41,14 +42,15 @@ class SecurityEvent(BaseModel):
     scenario_id: str = Field(min_length=1)
 
     timestamp: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
+        default_factory=lambda: datetime.now(
+            timezone.utc
+        )
     )
 
     source_agent_id: str
     source_agent_role: str
 
     event_type: EventType
-
     content_summary: str
 
     requested_resource: str | None = None
@@ -59,21 +61,27 @@ class SecurityEvent(BaseModel):
 
     source_agent_state: AgentState = AgentState.NORMAL
 
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(
+        default_factory=dict
+    )
 
 
 class MonitorDecision(BaseModel):
     decision_id: str
     event_id: str
-
     monitor_id: str
 
     monitor_state: AgentState = AgentState.NORMAL
 
     decision: SecurityDecision
 
-    confidence: float = Field(ge=0.0, le=1.0)
+    confidence: float = Field(
+        ge=0.0,
+        le=1.0,
+    )
 
     latency_ms: float = Field(ge=0.0)
 
-    reason_codes: list[str] = Field(default_factory=list)
+    reason_codes: list[str] = Field(
+        default_factory=list
+    )
