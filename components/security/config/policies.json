@@ -1,0 +1,71 @@
+{
+  "version": "0.1.0",
+  "description": "Synthetic PP1 policy configuration. Replace or extend only through documented experiment revisions.",
+  "always_block_resources": [
+    "credential_store",
+    "raw_api_keys",
+    "secret_key_vault"
+  ],
+  "always_block_tools": [
+    "credential_dump",
+    "unapproved_shell_execution",
+    "bulk_external_export"
+  ],
+  "roles": {
+    "Customer Complaint Agent": {
+      "allowed_resources": [
+        "customer_history",
+        "complaint_records",
+        "service_history"
+      ],
+      "blocked_resources": [
+        "full_customer_database",
+        "employee_payroll",
+        "credential_store"
+      ],
+      "allowed_tools": [
+        "complaint_search",
+        "ticket_update"
+      ],
+      "blocked_tools": [
+        "bulk_external_export"
+      ]
+    },
+    "Employee Performance Agent": {
+      "allowed_resources": [
+        "employee_kpi_records",
+        "approved_performance_history"
+      ],
+      "blocked_resources": [
+        "full_customer_database",
+        "credential_store"
+      ],
+      "allowed_tools": [
+        "kpi_query",
+        "performance_summary"
+      ],
+      "blocked_tools": [
+        "bulk_external_export"
+      ]
+    },
+    "After Sales Service Agent": {
+      "allowed_resources": [
+        "service_history",
+        "warranty_records",
+        "approved_customer_service_record"
+      ],
+      "blocked_resources": [
+        "employee_payroll",
+        "credential_store"
+      ],
+      "allowed_tools": [
+        "service_lookup",
+        "warranty_check"
+      ],
+      "blocked_tools": [
+        "unapproved_external_tool",
+        "bulk_external_export"
+      ]
+    }
+  }
+}
