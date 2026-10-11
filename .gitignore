@@ -1,44 +1,55 @@
-.env
-.env.local
-.env.*.local
-
-
+# Python-generated files
 __pycache__/
-*.py[cod]
-*.pyo
-*.pyd
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+
+.env
+.venv/
+__pycache__/
 .pytest_cache/
+*.db
+data/chroma/
 
 
+
+# Python environment
 .venv/
 venv/
-env/
+__pycache__/
+*.pyc
 
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
 
+# IDE
 .vscode/
 .idea/
 
+# Jupyter
+.ipynb_checkpoints/
 
-.DS_Store
-Thumbs.db
+# Local databases
+*.db
+*.sqlite3
 
-
+# Logs
 *.log
 
 
-components/security/data/private/
-components/security/data/metropolitan/
-components/security/data/raw_company_data/
-
-
-*.pkl
-*.joblib
-*.pt
-*.pth
-
-
-.ipynb_checkpoints/
-
-
-secrets/
-credentials/
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite3
