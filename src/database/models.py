@@ -1,3 +1,4 @@
+
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -15,11 +16,21 @@ from sqlalchemy.orm import (
 )
 
 
+# ============================================================
+# PROJECT PATH SETUP
+# ============================================================
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
 DATA_DIR = PROJECT_ROOT / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 DATABASE_PATH = DATA_DIR / "complaints.db"
+
+
+# ============================================================
+# DATABASE CONNECTION
+# ============================================================
 
 engine = create_engine(
     f"sqlite:///{DATABASE_PATH.as_posix()}"
@@ -33,8 +44,17 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
+# ============================================================
+# COMPLAINT DATABASE MODEL
+# ============================================================
+
 class Complaint(Base):
+
     __tablename__ = "complaints"
+
+    # --------------------------------------------------------
+    # BASIC COMPLAINT INFORMATION
+    # --------------------------------------------------------
 
     id = Column(
         Integer,
@@ -57,14 +77,26 @@ class Complaint(Base):
         nullable=False,
     )
 
+    # --------------------------------------------------------
+    # AGENT 1: COMPLAINT ANALYSIS
+    # --------------------------------------------------------
+
     category = Column(String(100))
     issue_type = Column(String(200))
     summary = Column(Text)
+
+    # --------------------------------------------------------
+    # AGENT 2: CUSTOMER EMOTION ANALYSIS
+    # --------------------------------------------------------
 
     emotion = Column(String(100))
     sentiment = Column(String(50))
     emotion_intensity = Column(String(50))
     emotion_score = Column(Integer)
+
+    # --------------------------------------------------------
+    # AGENT 3: PRIORITY AND BUSINESS IMPACT
+    # --------------------------------------------------------
 
     priority = Column(String(50))
     priority_score = Column(Integer)
@@ -72,9 +104,17 @@ class Complaint(Base):
 
     business_impact = Column(Text)
 
+    # --------------------------------------------------------
+    # AGENT 4: RESOLUTION RECOMMENDATION
+    # --------------------------------------------------------
+
     recommended_resolution = Column(Text)
     resolution_details = Column(Text)
     customer_response = Column(Text)
+
+    # --------------------------------------------------------
+    # COMPLAINT PROCESSING STATUS
+    # --------------------------------------------------------
 
     status = Column(
         String(50),
@@ -82,16 +122,52 @@ class Complaint(Base):
         nullable=False,
     )
 
+    # --------------------------------------------------------
+    # MANAGER APPROVAL / REJECTION INFORMATION
+    # --------------------------------------------------------
+
+    reviewed_by = Column(
+        String(150),
+        nullable=True,
+    )
+
+    review_comments = Column(
+        Text,
+        nullable=True,
+    )
+
+    reviewed_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    # --------------------------------------------------------
+    # COMPLAINT CREATION DATE
+    # --------------------------------------------------------
+
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
     )
 
 
+# ============================================================
+# CREATE DATABASE TABLES
+# ============================================================
+
 def create_database():
+
     Base.metadata.create_all(bind=engine)
 
 
+# ============================================================
+# RUN DATABASE INITIALIZATION
+# ============================================================
+
 if __name__ == "__main__":
+
     create_database()
-    print("Complaint database initialized successfully!")
+
+    print(
+        "Complaint database initialized successfully!"
+    )

@@ -12,6 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.database.models import Complaint, SessionLocal, create_database  # noqa: E402
+from src.services.review_service import submit_manager_review  # noqa: E402
 from src.services.complaint_service import (  # noqa: E402
     get_complaint_by_id,
     process_new_complaint,
@@ -71,6 +72,23 @@ div[data-testid="stFormSubmitButton"] button {background:#2563eb;border-color:#2
 [data-testid="stTabs"] button {font-weight:700;}
 [data-testid="stMetric"] {background:white;border:1px solid var(--line);border-radius:12px;padding:14px;}
 @media(max-width:700px){.block-container{padding:1.2rem}.hero-title{font-size:1.65rem}.case-card{align-items:flex-start}.metric-card{min-height:100px;padding:13px}}
+
+/* Manager review styling */
+.review-heading {font-family:Manrope,sans-serif;font-size:1.15rem;font-weight:800;color:#172641;margin:22px 0 6px;}
+.review-description {font-size:.9rem;color:#52647e;margin-bottom:15px;}
+.review-status {border:1px solid #e2e8f0;border-radius:12px;background:#fff;padding:17px 20px;margin:14px 0;}
+.review-status .review-label {font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#64748b;margin-bottom:8px;}
+.review-status .review-value {font-weight:800;font-size:1rem;}
+.review-pending {color:#975700!important;}
+.review-approved {color:#087443!important;}
+.review-rejected {color:#b42318!important;}
+.review-record {background:#fff;border:1px solid #e4eaf2;border-radius:12px;padding:18px 20px;margin:12px 0;}
+.review-record-label {font-size:.76rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.review-record-value {font-size:.94rem;color:#172641;white-space:pre-wrap;overflow-wrap:anywhere;}
+div[data-testid="stForm"] label p {color:#263954!important;font-weight:650;}
+div[data-testid="stForm"] input, div[data-testid="stForm"] textarea {color:#172641!important;background:#fff!important;border-color:#cbd5e1!important;}
+div[data-testid="stForm"] input::placeholder, div[data-testid="stForm"] textarea::placeholder {color:#8090a5!important;}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -254,8 +272,95 @@ else:
                 with tab3:
                     st.markdown('<div class="notice">Draft only. No message has been sent to the customer.</div>', unsafe_allow_html=True)
                     st.text_area("AI-generated response", value=complaint.get("customer_response") or "", height=260, disabled=True)
-                    a, b, c = st.columns(3)
-                    a.button("Approve", disabled=True, use_container_width=True)
-                    b.button("Edit", disabled=True, use_container_width=True)
-                    c.button("Reject", disabled=True, use_container_width=True)
-                    st.caption("Approval, editing and rejection require backend workflow implementation.")
+                    st.caption("Manager approval and rejection are available below the tabs.")
+
+                if st.session_state.get("review_notice"):
+                    st.success(st.session_state.pop("review_notice"))
+
+                # ==================================================
+                # MANAGER APPROVAL / REJECTION
+                # ==================================================
+                status = complaint.get("status") or "Unknown"
+                status_class = (
+                    "review-approved" if status == "Resolution Approved"
+                    else "review-rejected" if status == "Resolution Rejected"
+                    else "review-pending" if status == PENDING
+                    else ""
+                )
+                st.markdown(
+                    '<div class="review-status">'
+                    '<div class="review-label">Review status</div>'
+                    f'<div class="review-value {status_class}">{safe(status)}</div>'
+                    '</div>',
+                    unsafe_allow_html=True,
+                )
+
+                if status == PENDING:
+                    st.markdown('<div class="review-heading">Manager decision</div>', unsafe_allow_html=True)
+                    st.markdown(
+                        '<div class="review-description">Check the AI recommendation and draft customer '
+                        'response above before recording a decision.</div>',
+                        unsafe_allow_html=True,
+                    )
+
+                    with st.form(f"manager_review_{selected_id}"):
+                        reviewer_name = st.text_input(
+                            "Reviewer name *", placeholder="Enter manager name"
+                        )
+                        review_comments = st.text_area(
+                            "Review comments",
+                            placeholder="Approval notes or reason for rejection...",
+                            height=110,
+                        )
+                        decision = st.radio(
+                            "Decision", ["Approve", "Reject"], horizontal=True
+                        )
+                        confirm = st.checkbox(
+                            "I have reviewed the AI recommendation and confirm this decision."
+                        )
+                        submitted_review = st.form_submit_button(
+                            "Submit manager decision", type="primary",
+                            use_container_width=True,
+                        )
+
+                    if submitted_review:
+                        if not reviewer_name.strip():
+                            st.warning("Please enter the reviewer name.")
+                        elif decision == "Reject" and not review_comments.strip():
+                            st.warning("Please provide a reason for rejection.")
+                        elif not confirm:
+                            st.warning("Please confirm your decision.")
+                        else:
+                            try:
+                                result = submit_manager_review(
+                                    complaint_id=selected_id,
+                                    reviewer_name=reviewer_name.strip(),
+                                    decision=decision,
+                                    comments=review_comments.strip(),
+                                )
+                                st.session_state["review_notice"] = (
+                                    f"Complaint #{selected_id}: {result['status']}"
+                                )
+                                st.rerun()
+                            except ValueError as error:
+                                st.error(str(error))
+                            except Exception:
+                                st.error("Could not save the review. Check the application logs.")
+                                raise
+
+                elif status in ("Resolution Approved", "Resolution Rejected"):
+                    st.markdown('<div class="review-heading">Manager review record</div>', unsafe_allow_html=True)
+                    for label, value in (
+                        ("Reviewed by", complaint.get("reviewed_by") or "N/A"),
+                        ("Decision", status),
+                        ("Comments", complaint.get("review_comments") or "None"),
+                        ("Reviewed at (UTC)", str(complaint.get("reviewed_at") or "N/A")),
+                    ):
+                        st.markdown(
+                            '<div class="review-record">'
+                            f'<div class="review-record-label">{safe(label)}</div>'
+                            f'<div class="review-record-value">{safe(value)}</div>'
+                            '</div>', unsafe_allow_html=True,
+                        )
+                    st.info("Decision recorded. No customer message has been sent.")
+
