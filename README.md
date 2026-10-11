@@ -16,3 +16,5 @@ New-Item -ItemType File -Force -Path src/__init__.py, src/agents/__init__.py, sr
 
 --Create the database
 uv run python -m src.database.models
+
+uv run python test_resolution_agent.py
