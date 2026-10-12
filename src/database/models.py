@@ -82,7 +82,9 @@ class Complaint(Base):
     # --------------------------------------------------------
 
     category = Column(String(100))
+
     issue_type = Column(String(200))
+
     summary = Column(Text)
 
     # --------------------------------------------------------
@@ -90,8 +92,11 @@ class Complaint(Base):
     # --------------------------------------------------------
 
     emotion = Column(String(100))
+
     sentiment = Column(String(50))
+
     emotion_intensity = Column(String(50))
+
     emotion_score = Column(Integer)
 
     # --------------------------------------------------------
@@ -99,7 +104,9 @@ class Complaint(Base):
     # --------------------------------------------------------
 
     priority = Column(String(50))
+
     priority_score = Column(Integer)
+
     proposed_sla_hours = Column(Integer)
 
     business_impact = Column(Text)
@@ -109,7 +116,9 @@ class Complaint(Base):
     # --------------------------------------------------------
 
     recommended_resolution = Column(Text)
+
     resolution_details = Column(Text)
+
     customer_response = Column(Text)
 
     # --------------------------------------------------------
@@ -142,6 +151,26 @@ class Complaint(Base):
     )
 
     # --------------------------------------------------------
+    # SLA TRACKING
+    # --------------------------------------------------------
+
+    sla_due_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    sla_completed_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    escalation_status = Column(
+        String(50),
+        default="Not Escalated",
+        nullable=False,
+    )
+
+    # --------------------------------------------------------
     # COMPLAINT CREATION DATE
     # --------------------------------------------------------
 
@@ -157,7 +186,9 @@ class Complaint(Base):
 
 def create_database():
 
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(
+        bind=engine
+    )
 
 
 # ============================================================
