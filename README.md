@@ -15,7 +15,7 @@ Chithira(IT23366268) - components/Employee_Efficiency
 Hasandi(IT23359406) - components/After_Sales_Service
 
 
-
+--------------------------------------------------------------------------------------------------------------------------------------------------
 
 uv init uv python install 3.11 uv venv --python 3.11
 
