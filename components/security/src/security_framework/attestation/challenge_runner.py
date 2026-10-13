@@ -86,7 +86,7 @@ class ChallengeRunner:
             encoding="utf-8",
         ) as file:
             file.write(result.model_dump_json())
-            file.write("\\n")
+            file.write("\n")
 
     def run_challenge(
         self,

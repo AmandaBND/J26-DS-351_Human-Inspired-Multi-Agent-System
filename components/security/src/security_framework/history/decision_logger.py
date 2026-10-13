@@ -111,7 +111,7 @@ class MonitorDecisionLogger:
             encoding="utf-8",
         ) as file:
             file.write(record.model_dump_json())
-            file.write("\\n")
+            file.write("\n")
 
     def log(
         self,
