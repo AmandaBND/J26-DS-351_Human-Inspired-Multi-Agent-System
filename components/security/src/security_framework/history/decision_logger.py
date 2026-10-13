@@ -18,45 +18,28 @@ from security_framework.monitors import MonitorResult
 
 class MonitorDecisionLogRecord(BaseModel):
     logged_at: datetime = Field(
-        default_factory=lambda: datetime.now(
-            timezone.utc
-        )
+        default_factory=lambda: datetime.now(timezone.utc)
     )
-
     episode_id: str = Field(min_length=1)
     scenario_id: str = Field(min_length=1)
     event_id: str = Field(min_length=1)
-
     monitor_id: str = Field(min_length=1)
     monitor_type: str
-
     monitor_decision: SecurityDecision
     risk_score: float = Field(ge=0.0, le=1.0)
     confidence: float = Field(ge=0.0, le=1.0)
     latency_ms: float = Field(ge=0.0)
-
     expected_event_decision: SecurityDecision
     attack_type: str
-
     experimental_monitor_state: AgentState | None = None
     experimental_behavior_mode: str | None = None
-
-    reason_codes: list[str] = Field(
-        default_factory=list
-    )
-
+    reason_codes: list[str] = Field(default_factory=list)
     source_dataset: str = "synthetic"
-
-    provenance: dict[str, Any] = Field(
-        default_factory=dict
-    )
+    provenance: dict[str, Any] = Field(default_factory=dict)
 
 
 class MonitorDecisionLogger:
-    def __init__(
-        self,
-        output_file: str | Path,
-    ) -> None:
+    def __init__(self, output_file: str | Path) -> None:
         self.output_file = Path(output_file)
         self.output_file.parent.mkdir(
             parents=True,
@@ -75,8 +58,10 @@ class MonitorDecisionLogger:
             "split",
             "attack_family",
             "surface",
+            "verification_source",
+            "challenge_id",
+            "challenge_category",
         }
-
         return {
             key: event.metadata[key]
             for key in allowed_keys
@@ -104,12 +89,8 @@ class MonitorDecisionLogger:
             latency_ms=result.latency_ms,
             expected_event_decision=event.expected_decision,
             attack_type=event.attack_type.value,
-            experimental_monitor_state=(
-                experimental_monitor_state
-            ),
-            experimental_behavior_mode=(
-                experimental_behavior_mode
-            ),
+            experimental_monitor_state=experimental_monitor_state,
+            experimental_behavior_mode=experimental_behavior_mode,
             reason_codes=result.reason_codes,
             source_dataset=str(
                 event.metadata.get(
@@ -124,16 +105,13 @@ class MonitorDecisionLogger:
             provenance=self._safe_provenance(event),
         )
 
-    def append(
-        self,
-        record: MonitorDecisionLogRecord,
-    ) -> None:
+    def append(self, record: MonitorDecisionLogRecord) -> None:
         with self.output_file.open(
             "a",
             encoding="utf-8",
         ) as file:
             file.write(record.model_dump_json())
-            file.write("\n")
+            file.write("\\n")
 
     def log(
         self,
@@ -148,57 +126,38 @@ class MonitorDecisionLogger:
             episode_id=episode_id,
             event=event,
             result=result,
-            experimental_monitor_state=(
-                experimental_monitor_state
-            ),
-            experimental_behavior_mode=(
-                experimental_behavior_mode
-            ),
+            experimental_monitor_state=experimental_monitor_state,
+            experimental_behavior_mode=experimental_behavior_mode,
         )
-
         self.append(record)
         return record
 
-    def read_all(
-        self,
-    ) -> list[MonitorDecisionLogRecord]:
+    def read_all(self) -> list[MonitorDecisionLogRecord]:
         if not self.output_file.exists():
             return []
 
-        records: list[
-            MonitorDecisionLogRecord
-        ] = []
+        records: list[MonitorDecisionLogRecord] = []
 
         with self.output_file.open(
             "r",
             encoding="utf-8",
         ) as file:
-            for line_number, line in enumerate(
-                file,
-                start=1,
-            ):
+            for line_number, line in enumerate(file, start=1):
                 text = line.strip()
-
                 if not text:
                     continue
-
                 try:
                     records.append(
-                        MonitorDecisionLogRecord
-                        .model_validate_json(text)
+                        MonitorDecisionLogRecord.model_validate_json(text)
                     )
                 except Exception as exc:
                     raise ValueError(
-                        "Invalid monitor decision log "
-                        f"at line {line_number}."
+                        f"Invalid monitor decision log at line {line_number}."
                     ) from exc
 
         return records
 
-    def export_csv(
-        self,
-        csv_file: str | Path,
-    ) -> Path:
+    def export_csv(self, csv_file: str | Path) -> Path:
         csv_path = Path(csv_file)
         csv_path.parent.mkdir(
             parents=True,
@@ -206,7 +165,6 @@ class MonitorDecisionLogger:
         )
 
         records = self.read_all()
-
         fieldnames = list(
             MonitorDecisionLogRecord.model_fields.keys()
         )
@@ -223,9 +181,7 @@ class MonitorDecisionLogger:
             writer.writeheader()
 
             for record in records:
-                row = record.model_dump(
-                    mode="json"
-                )
+                row = record.model_dump(mode="json")
                 row["reason_codes"] = json.dumps(
                     row["reason_codes"],
                     ensure_ascii=False,

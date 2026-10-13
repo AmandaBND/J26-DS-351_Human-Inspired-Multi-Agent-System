@@ -51,3 +51,8 @@ data/public/injecagent/provenance.json
 
 !data/monitor_logs/.gitkeep
 !data/public/injecagent/README.md
+
+data/attestation/*.jsonl
+data/processed/monitor_reliability_features*.csv
+
+!data/attestation/.gitkeep
