@@ -24,7 +24,15 @@ from src.services.review_service import submit_manager_review  # noqa: E402
 
 from src.services.sla_service import get_sla_status  # noqa: E402
 
-from src.services.escalation_service import check_overdue_complaints  # noqa: E402
+from src.services.escalation_service import (  # noqa: E402
+    check_overdue_complaints,
+    process_overdue_escalations,
+)
+from src.services.notification_service import (  # noqa: E402
+    get_manager_notifications,
+    count_unread_notifications,
+    mark_notification_read,
+)
 
 from src.services.complaint_service import (  # noqa: E402
 
@@ -168,30 +176,52 @@ div[data-testid="stForm"] input, div[data-testid="stForm"] textarea {color:#1726
 
 div[data-testid="stForm"] input::placeholder, div[data-testid="stForm"] textarea::placeholder {color:#8090a5!important;}
 
-
 /* Accessible font colors: light content, dark sidebar */
+
 .stApp, .stApp p, .stApp li, .stApp label,
+
 .stApp [data-testid="stMarkdownContainer"] { color: #172641; }
+
 .stApp h1, .stApp h2, .stApp h3, .stApp h4 { color: #14243e; }
+
 .stApp [data-testid="stCaptionContainer"],
+
 .stApp .stCaption, .stApp small { color: #52627a; }
+
 .stApp [data-testid="stWidgetLabel"] p { color: #243650; font-weight: 600; }
+
 .stApp [data-testid="stMetricLabel"] p { color: #475569; }
+
 .stApp [data-testid="stMetricValue"] { color: #14243e; }
+
 .stApp input, .stApp textarea { color: #172641 !important; }
+
 .stApp input::placeholder, .stApp textarea::placeholder { color: #64748b !important; }
+
 .stApp [data-baseweb="select"] * { color: #172641; }
+
 .stApp [data-testid="stTabs"] button { color: #475569; }
+
 .stApp [data-testid="stTabs"] button[aria-selected="true"] { color: #1d4ed8; }
+
 .stApp [data-testid="stSidebar"] { color: #f1f5f9; }
+
 .stApp [data-testid="stSidebar"] p,
+
 .stApp [data-testid="stSidebar"] label,
+
 .stApp [data-testid="stSidebar"] h1,
+
 .stApp [data-testid="stSidebar"] h2,
+
 .stApp [data-testid="stSidebar"] h3,
+
 .stApp [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] { color: #f1f5f9; }
+
 .stApp [data-testid="stSidebar"] [data-testid="stCaptionContainer"] { color: #cbd5e1 !important; }
+
 .stApp [data-testid="stSidebar"] [role="radiogroup"] label p { color: #f1f5f9; }
+
 .stApp [data-testid="stAlert"] p { color: inherit; }
 
 </style>
@@ -268,7 +298,7 @@ with st.sidebar:
 
     st.divider()
 
-    page = st.radio("Navigation", ["Dashboard", "Submit complaint", "Review complaints"], label_visibility="collapsed")
+    page = st.radio("Navigation", ["Dashboard", "Submit complaint", "Review complaints", "Notifications"], label_visibility="collapsed")
 
     st.divider()
 
@@ -368,6 +398,24 @@ if page == "Dashboard":
 
             st.exception(error)
 
+    st.divider()
+    st.subheader("Escalation Monitoring")
+    try:
+        new_escalations = process_overdue_escalations()
+        unread_count = count_unread_notifications()
+        left, right = st.columns(2)
+        with left:
+            st.metric("Overdue Complaints", len(check_overdue_complaints()))
+        with right:
+            st.metric("Unread Manager Notifications", unread_count)
+        if new_escalations:
+            st.warning(f"{len(new_escalations)} new SLA escalation(s) created.")
+        if unread_count > 0:
+            st.warning("Manager notifications require attention. Open the Notifications page.")
+    except Exception as error:
+        st.error("Escalation monitoring could not be loaded.")
+        with st.expander("Technical details"):
+            st.exception(error)
 
 
 elif page == "Submit complaint":
@@ -438,7 +486,7 @@ elif page == "Submit complaint":
 
                     st.exception(error)
 
-else:
+elif page == "Review complaints":
 
     header("Review complaints", "Find a case, inspect agent decisions, and review the proposed customer response.")
 
@@ -533,8 +581,6 @@ else:
                         "Escalation is recommended."
 
                     )
-
-
 
                 tab1, tab2, tab3 = st.tabs(["Complaint details", "Resolution plan", "Customer reply"])
 
@@ -773,3 +819,56 @@ else:
                         )
 
                     st.info("Decision recorded. No customer message has been sent.")
+
+
+# ============================================================
+# MANAGER NOTIFICATION CENTER
+# ============================================================
+
+elif page == "Notifications":
+    header("Manager notification center", "SLA escalation alerts and manager notifications.")
+
+    try:
+        new_escalations = process_overdue_escalations()
+        if new_escalations:
+            st.warning(f"{len(new_escalations)} new SLA escalation(s) created.")
+
+        unread_count = count_unread_notifications()
+        st.metric("Unread Notifications", unread_count)
+
+        if st.button("Refresh notifications", use_container_width=False):
+            st.rerun()
+
+        unread_only = st.checkbox("Show unread notifications only", value=False)
+        notifications = get_manager_notifications(unread_only=unread_only)
+
+        if not notifications:
+            st.info("No notifications found.")
+        else:
+            for notification in notifications:
+                notification_id = notification["id"]
+                complaint_id = notification["complaint_id"]
+
+                with st.container(border=True):
+                    left, right = st.columns([4, 1])
+                    with left:
+                        st.markdown(f"#### {safe(notification['title'])}")
+                    with right:
+                        st.caption("Read" if notification["is_read"] else "Unread")
+
+                    st.write(notification["message"])
+                    st.caption(f"Complaint ID: {complaint_id}")
+                    st.caption(f"Recipient role: {notification['recipient_role']}")
+                    st.caption(f"Created (UTC): {notification['created_at']}")
+
+                    if not notification["is_read"]:
+                        if st.button("Mark as Read", key=f"read_{notification_id}"):
+                            updated = mark_notification_read(notification_id)
+                            if updated:
+                                st.rerun()
+                            else:
+                                st.info("Notification was already read.")
+    except Exception as error:
+        st.error("Notifications could not be loaded.")
+        with st.expander("Technical details"):
+            st.exception(error)

@@ -9,6 +9,8 @@ from sqlalchemy import (
     String,
     Text,
     DateTime,
+    ForeignKey,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import (
     declarative_base,
@@ -177,6 +179,122 @@ class Complaint(Base):
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
+    )
+
+
+# ============================================================
+# ESCALATION AUDIT RECORD
+# ============================================================
+
+class ComplaintEscalation(Base):
+
+    __tablename__ = "complaint_escalations"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+    )
+
+    complaint_id = Column(
+        Integer,
+        ForeignKey("complaints.id"),
+        nullable=False,
+        index=True,
+    )
+
+    escalation_type = Column(
+        String(50),
+        nullable=False,
+        default="SLA Overdue",
+    )
+
+    reason = Column(
+        Text,
+        nullable=False,
+    )
+
+    escalated_to = Column(
+        String(150),
+        nullable=False,
+        default="Service Manager",
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    # Prevent duplicate escalations of the same type
+    # for the same complaint.
+
+    __table_args__ = (
+        UniqueConstraint(
+            "complaint_id",
+            "escalation_type",
+            name="uq_complaint_escalation_type",
+        ),
+    )
+
+
+# ============================================================
+# MANAGER NOTIFICATIONS
+# ============================================================
+
+class ManagerNotification(Base):
+
+    __tablename__ = "manager_notifications"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+    )
+
+    complaint_id = Column(
+        Integer,
+        ForeignKey("complaints.id"),
+        nullable=False,
+        index=True,
+    )
+
+    escalation_id = Column(
+        Integer,
+        ForeignKey("complaint_escalations.id"),
+        nullable=False,
+        unique=True,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    message = Column(
+        Text,
+        nullable=False,
+    )
+
+    recipient_role = Column(
+        String(100),
+        nullable=False,
+        default="Service Manager",
+    )
+
+    is_read = Column(
+        Integer,
+        nullable=False,
+        default=0,
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    read_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
     )
 
 
