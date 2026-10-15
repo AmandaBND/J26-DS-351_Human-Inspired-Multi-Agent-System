@@ -1,0 +1,16 @@
+{
+  "initial_trust": 0.85,
+  "alpha": 0.7,
+  "weights": {
+    "model_reliability": 0.5,
+    "challenge_accuracy": 0.3,
+    "policy_integrity": 0.2
+  },
+  "thresholds": {
+    "active": 0.7,
+    "reduced": 0.5,
+    "review": 0.3
+  },
+  "severe_violation_cap": 0.15,
+  "note": "Initial PP1 parameters. Final values must be tuned on validation data."
+}
