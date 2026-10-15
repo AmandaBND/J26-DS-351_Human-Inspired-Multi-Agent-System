@@ -1,0 +1,11 @@
+{
+  "review_threshold": 0.35,
+  "block_threshold": 0.7,
+  "single_guard_id": "policy-monitor",
+  "static_weights": {
+    "semantic-monitor": 0.34,
+    "policy-monitor": 0.33,
+    "behavior-monitor": 0.33
+  },
+  "note": "PP1 engineering thresholds/weights; tune on validation data for final experiments."
+}
