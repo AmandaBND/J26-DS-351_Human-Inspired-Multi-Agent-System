@@ -30,6 +30,7 @@ class WhisperBackend:
             beam_size=5,
             vad_filter=False,
             condition_on_previous_text=False,
+            no_speech_threshold=None,
         )
 
         return " ".join(segment.text.strip() for segment in segments)

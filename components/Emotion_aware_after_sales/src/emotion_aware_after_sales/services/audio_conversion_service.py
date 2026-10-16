@@ -8,7 +8,7 @@ class AudioConversionService:
     """Convert phone recordings into 16 kHz mono WAV audio."""
 
     SUPPORTED_EXTENSIONS = {
-        ".wav", ".mp3", ".m4a", ".amr", ".3gp"
+        ".wav", ".mp3", ".m4a", ".amr", ".3gp", ".mp4"
     }
 
     def __init__(self, ffmpeg_path=None):
