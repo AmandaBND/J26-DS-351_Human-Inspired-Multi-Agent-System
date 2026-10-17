@@ -44,6 +44,25 @@ from emotion_aware_after_sales.services.diarized_transcription_service import (
     DiarizedTranscriptionService,
 )
 
+from emotion_aware_after_sales.services.sinhala_emotion_cue_service import (
+    SinhalaEmotionCueService,
+)
+from emotion_aware_after_sales.services.temporal_emotion_fusion_service import (
+    TemporalEmotionFusionService,
+)
+
+from emotion_aware_after_sales.services.emotion_acoustic_features_service import (
+    EmotionAcousticFeaturesService,
+)
+
+from emotion_aware_after_sales.services.customer_audio_service import (
+    CustomerAudioService,
+)
+
+from emotion_aware_after_sales.services.diarization_service import (
+    SpeakerTurn,
+)
+
 st.set_page_config(
     page_title="Emotion-Aware AMC Decision Intelligence",
     layout="wide",
@@ -525,6 +544,51 @@ if uploaded_file is not None:
 
             st.session_state["diarized_results"] = diarized_results
 
+            customer_emotion_cues = SinhalaEmotionCueService().analyze(
+                diarized_results
+            )
+
+            st.session_state["customer_emotion_cues"] = customer_emotion_cues
+
+            # Reconstruct customer speaker turns from the diarized transcript.
+            customer_turns = [
+                SpeakerTurn(
+                    start_seconds=turn["start_seconds"],
+                    end_seconds=turn["end_seconds"],
+                    speaker_id=turn["speaker_id"],
+                    role=turn["role"],
+                )
+                for turn in diarized_results
+                if turn["role"] == "customer"
+            ]
+
+            # Load the uploaded recording as 16 kHz mono audio.
+            with tempfile.TemporaryDirectory() as temp_dir:
+                audio_path = Path(temp_dir) / Path(uploaded_file.name).name
+                audio_path.write_bytes(uploaded_file.getvalue())
+
+                audio = AudioPreprocessingPipeline().process(audio_path)
+
+            # Extract customer-only audio segments.
+            customer_segments = CustomerAudioService().extract_customer_segments(
+                samples=audio.samples,
+                sample_rate=audio.sample_rate,
+                speaker_turns=customer_turns,
+            )
+
+            # Extract energy, pauses, and pitch from customer speech.
+            acoustic_features = EmotionAcousticFeaturesService().analyze(
+                customer_segments
+            )
+
+            # Fuse transcript cues with acoustic evidence over time.
+            temporal_results = TemporalEmotionFusionService().analyze(
+                text_cues=customer_emotion_cues,
+                acoustic_features=acoustic_features,
+            )
+
+            st.session_state["temporal_emotion_results"] = temporal_results
+
     if "diarized_results" in st.session_state:
         for turn in st.session_state["diarized_results"]:
             speaker_label = (
@@ -549,4 +613,100 @@ if uploaded_file is not None:
                         f"{suggestion['original']} "
                         f"→ {suggestion['replacement']} "
                         "(review required)"
+                )
+    if "customer_emotion_cues" in st.session_state:
+        st.subheader("Customer Emotion Cues Over Time")
+
+        for cue in st.session_state["customer_emotion_cues"]:
+            matching_turns = [
+                turn
+                for turn in st.session_state.get("diarized_results", [])
+                if turn["role"] == "customer"
+                and abs(turn["start_seconds"] - cue.start_seconds) < 0.1
+        ]
+
+            customer_text = (
+                matching_turns[0]["normalized_text"]
+                if matching_turns
+                else ""
+            )
+
+            with st.container(border=True):
+                st.markdown(
+                    f"**Customer: {cue.start_seconds:.1f}s – "
+                    f"{cue.end_seconds:.1f}s**"
+                )
+
+                st.write(
+                    f"Frustration cues: {cue.frustration_score:.2f} | "
+                    f"Satisfaction cues: {cue.satisfaction_score:.2f} | "
+                    f"Uncertainty cues: {cue.uncertainty_score:.2f}"
+                )
+
+                st.caption("Customer transcript:")
+                st.write(
+                    customer_text if customer_text
+                    else "(No transcript available)"
+                )
+
+                if cue.matched_cues:
+                    st.success(
+                        "Matched evidence: " + ", ".join(cue.matched_cues)
+                )
+                else:
+                    st.caption(
+                    "No matching emotion-related phrases detected."
+                )
+
+    if "temporal_emotion_results" in st.session_state:
+        st.subheader("Temporal Customer Emotion Evidence")
+
+        temporal_results = st.session_state["temporal_emotion_results"]
+
+        if temporal_results:
+            timeline_data = pd.DataFrame(
+                [
+                    {
+                        "Time (s)": (
+                            point.start_seconds + point.end_seconds
+                        ) / 2,
+                        "Frustration evidence": point.frustration_evidence,
+                        "Satisfaction evidence": point.satisfaction_evidence,
+                    }
+                    for point in temporal_results
+                ]
+            )
+
+            st.line_chart(
+                timeline_data.set_index("Time (s)")
+            )
+
+            for point in temporal_results:
+                with st.expander(
+                    f"{point.start_seconds:.1f}s – "
+                    f"{point.end_seconds:.1f}s | "
+                    f"Trend: {point.trend}"
+                ):
+                    st.write(
+                        f"Frustration evidence: "
+                        f"{point.frustration_evidence:.2f}"
                     )
+
+                    st.write(
+                        f"Satisfaction evidence: "
+                        f"{point.satisfaction_evidence:.2f}"
+                    )
+
+                    st.write(
+                        f"Uncertainty indicator: "
+                        f"{point.uncertainty:.2f}"
+                    )
+
+                    if point.evidence:
+                        st.write("Evidence:")
+                        for item in point.evidence:
+                            st.write(f"- {item}")
+                    else:
+                        st.caption("Insufficient recognized evidence.")
+        else:
+            st.warning("No customer emotion timeline was generated.")
