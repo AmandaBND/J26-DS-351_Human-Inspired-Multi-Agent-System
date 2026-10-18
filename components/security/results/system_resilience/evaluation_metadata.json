@@ -1,0 +1,7 @@
+{
+  "probability_model": "random_forest",
+  "evidence_mode": "full",
+  "episode_count": 32,
+  "event_result_rows": 3072,
+  "warning": "Preliminary PP1 results on a controlled held-out benchmark."
+}
