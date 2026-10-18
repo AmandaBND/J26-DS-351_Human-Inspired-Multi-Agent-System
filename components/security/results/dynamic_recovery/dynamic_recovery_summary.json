@@ -1,0 +1,10 @@
+{
+  "probability_model": "random_forest",
+  "monitor_id": "policy-monitor",
+  "compromise_condition": "FALSE_ALLOW",
+  "detection_delay_windows": 2,
+  "recovery_delay_windows": 3,
+  "minimum_trust": 0.24737126837319995,
+  "final_trust": 0.9227236926469871,
+  "warning": "Controlled PP1 temporal experiment using representative held-out feature rows."
+}
