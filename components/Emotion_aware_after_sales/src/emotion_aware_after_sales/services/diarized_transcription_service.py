@@ -21,12 +21,22 @@ class DiarizedTranscriptionService:
         results = []
 
         for turn in speaker_turns:
-            start_index = max(
-                0, int(turn.start_seconds * sample_rate)
+            # Give Whisper a little context around each detected turn.
+            # The verified speaker timestamps and roles remain unchanged.
+            CONTEXT_SECONDS = 0.3
+
+            audio_start = max(
+                0.0,
+                turn.start_seconds - CONTEXT_SECONDS,
             )
-            end_index = min(
-                len(samples), int(turn.end_seconds * sample_rate)
+
+            audio_end = min(
+            len(samples) / sample_rate,
+            turn.end_seconds + CONTEXT_SECONDS,
             )
+
+            start_index = int(audio_start * sample_rate)
+            end_index = int(audio_end * sample_rate)
 
             if end_index <= start_index:
                 continue

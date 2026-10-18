@@ -1,712 +1,368 @@
-from pathlib import Path
+
+"""Streamlit prototype: diarization, agent voice matching, and customer acoustics.
+
+Transcription is intentionally disabled in this workflow.
+"""
+from __future__ import annotations
+
 import hashlib
 import tempfile
 import time
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 import torch
-from pyannote.audio import Pipeline
+from pyannote.audio import Model, Pipeline
 
-from emotion_aware_after_sales.services.audio_preprocessing_pipeline import (
-    AudioPreprocessingPipeline,
-)
-from emotion_aware_after_sales.services.automatic_diarization_service import (
-    AutomaticDiarizationService,
-)
-from emotion_aware_after_sales.services.customer_audio_service import (
-    CustomerAudioService,
-)
-from emotion_aware_after_sales.services.temporal_acoustic_service import (
-    TemporalAcousticService,
-)
-from emotion_aware_after_sales.services.whisper_backend import (
-    WhisperBackend,
-)
-from emotion_aware_after_sales.services.transcription_service import (
-    TranscriptionService,
-)
-from emotion_aware_after_sales.services.hybrid_normalization_service import (
-    HybridNormalizationService,
-)
-from emotion_aware_after_sales.services.sinhala_asr_service import (
-    SinhalaASRService,
-)
-from emotion_aware_after_sales.services.amc_vocabulary_normalizer import (
-    AMCVocabularyNormalizer,
-)
-from emotion_aware_after_sales.services.diarization_service import (
-    DiarizationService,
-    SpeakerTurn,
-)
+from emotion_aware_after_sales.services.audio_preprocessing_pipeline import AudioPreprocessingPipeline
+from emotion_aware_after_sales.services.automatic_diarization_service import AutomaticDiarizationService
+from emotion_aware_after_sales.services.automatic_role_identification_service import AutomaticRoleIdentificationService
+from emotion_aware_after_sales.services.customer_audio_service import CustomerAudioService
+from emotion_aware_after_sales.services.diarization_service import SpeakerTurn
+from emotion_aware_after_sales.services.emotion_acoustic_features_service import EmotionAcousticFeaturesService
+from emotion_aware_after_sales.services.temporal_acoustic_service import TemporalAcousticService
+from emotion_aware_after_sales.services.temporal_acoustic_emotion_service import TemporalAcousticEmotionService
 
-from emotion_aware_after_sales.services.diarized_transcription_service import (
-    DiarizedTranscriptionService,
-)
 
-from emotion_aware_after_sales.services.sinhala_emotion_cue_service import (
-    SinhalaEmotionCueService,
-)
-from emotion_aware_after_sales.services.temporal_emotion_fusion_service import (
-    TemporalEmotionFusionService,
-)
 
-from emotion_aware_after_sales.services.emotion_acoustic_features_service import (
-    EmotionAcousticFeaturesService,
-)
-
-from emotion_aware_after_sales.services.customer_audio_service import (
-    CustomerAudioService,
-)
-
-from emotion_aware_after_sales.services.diarization_service import (
-    SpeakerTurn,
-)
-
-st.set_page_config(
-    page_title="Emotion-Aware AMC Decision Intelligence",
-    layout="wide",
-)
-
+st.set_page_config(page_title="Emotion-Aware AMC Decision Intelligence", layout="wide")
 st.title("Emotion-Aware After-Sales Service")
-st.caption("Sinhala AMC call analysis — research prototype")
+st.caption("AMC call research prototype — automatic speaker roles and customer acoustic evidence")
+
 
 @st.cache_resource
 def load_diarization_model():
-    pipeline = Pipeline.from_pretrained(
-        "pyannote/speaker-diarization-community-1"
-    )
+    pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1")
+    if pipeline is None:
+        raise RuntimeError("Diarization model could not be loaded.")
     pipeline.to(torch.device("cpu"))
     return pipeline
 
-@st.cache_resource
-def load_whisper_model():
-    return WhisperBackend(model_size="base")
 
 @st.cache_resource
-def load_sinhala_asr_model():
-    return SinhalaASRService()
+def load_role_identification_model():
+    model = Model.from_pretrained("pyannote/embedding")
+    if model is None:
+        raise RuntimeError("Speaker embedding model could not be loaded.")
+    return model
 
-@st.cache_data(show_spinner=False)
-def run_cached_transcription(audio_bytes: bytes, filename: str):
-    """Transcribe the complete call once and cache the result."""
 
-    with tempfile.TemporaryDirectory() as temp_dir:
-        input_path = Path(temp_dir) / Path(filename).name
-        input_path.write_bytes(audio_bytes)
+def preprocess_bytes(audio_bytes: bytes, filename: str):
+    """Return normalized audio; keep temporary source file alive while decoding."""
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / ("recording" + Path(filename).suffix.lower())
+        path.write_bytes(audio_bytes)
+        return AudioPreprocessingPipeline().process(path)
 
-        audio = AudioPreprocessingPipeline().process(input_path)
-
-        transcription_service = TranscriptionService(
-            backend=load_whisper_model()
-        )
-
-        transcription_result = transcription_service.transcribe_segment(
-            samples=audio.samples,
-            sample_rate=audio.sample_rate,
-            start_seconds=0.0,
-            end_seconds=audio.duration_seconds,
-            language="si",
-        )
-
-        raw_text = transcription_result.text
-
-        normalization = HybridNormalizationService().normalize(
-            raw_text
-        )
-
-        return {
-            "raw_text": raw_text,
-            "normalized_text": normalization.normalized_text,
-        }
-
-@st.cache_data(show_spinner=False)
-def run_cached_sinhala_transcription(audio_bytes, filename):
-    with tempfile.TemporaryDirectory() as temp_dir:
-        audio_path = Path(temp_dir) / Path(filename).name
-        audio_path.write_bytes(audio_bytes)
-
-        audio = AudioPreprocessingPipeline().process(audio_path)
-
-        segments = load_sinhala_asr_model().transcribe(
-            samples=audio.samples,
-            sample_rate=audio.sample_rate,
-            chunk_seconds=20,
-        )
-
-    vocabulary_path = (
-        Path(__file__).resolve().parent
-        / "config"
-        / "amc_vocabulary.json"
-    )
-
-    normalizer = AMCVocabularyNormalizer(vocabulary_path)
-
-    results = []
-
-    for segment in segments:
-        normalized = normalizer.normalize(segment.raw_text)
-
-        results.append(
-            {
-                "start_seconds": segment.start_seconds,
-                "end_seconds": segment.end_seconds,
-                "raw_text": segment.raw_text,
-                "normalized_text": normalized.normalized_text,
-                "corrections": [
-                    {
-                        "original": item.original,
-                        "replacement": item.replacement,
-                    }
-                    for item in normalized.corrections
-                ],
-                "review_suggestions": [
-                    {
-                        "original": item.original,
-                        "suggested_replacement": (
-                            item.suggested_replacement
-                        ),
-                    }
-                    for item in normalized.suggestions
-                ],
-            }
-        )
-
-    return results
-
-@st.cache_data(show_spinner=False)
-def run_cached_diarized_transcription(
-    audio_bytes,
-    filename,
-    agent_speaker_id,
-):
-    with tempfile.TemporaryDirectory() as temp_dir:
-        audio_path = Path(temp_dir) / Path(filename).name
-        audio_path.write_bytes(audio_bytes)
-
-        audio = AudioPreprocessingPipeline().process(audio_path)
-
-    # Reuse cached speaker detection instead of running pyannote again.
-    cached_turns = run_cached_diarization(audio_bytes, filename)
-
-    speaker_turns = []
-
-    for start, end, speaker_id in cached_turns:
-        role = (
-            "agent"
-            if speaker_id == agent_speaker_id
-            else "customer"
-        )
-
-        speaker_turns.append(
-            SpeakerTurn(
-                start_seconds=start,
-                end_seconds=end,
-                speaker_id=speaker_id,
-                role=role,
-            )
-        )
-
-    service = DiarizedTranscriptionService(
-        asr_service=load_sinhala_asr_model()
-    )
-
-    results = service.transcribe(
-        samples=audio.samples,
-        sample_rate=audio.sample_rate,
-        speaker_turns=speaker_turns,
-    )
-
-    vocabulary_path = (
-        Path(__file__).resolve().parent
-        / "config"
-        / "amc_vocabulary.json"
-    )
-    normalizer = AMCVocabularyNormalizer(vocabulary_path)
-
-    output = []
-
-    for turn in results:
-        normalized = normalizer.normalize(turn.raw_text)
-
-        output.append(
-            {
-                "start_seconds": turn.start_seconds,
-                "end_seconds": turn.end_seconds,
-                "speaker_id": turn.speaker_id,
-                "role": turn.role,
-                "raw_text": turn.raw_text,
-                "normalized_text": normalized.normalized_text,
-                "review_suggestions": [
-                    {
-                        "original": suggestion.original,
-                        "replacement": suggestion.suggested_replacement,
-                    }
-                    for suggestion in normalized.suggestions
-                ],
-            }
-        )
-
-    return output
 
 @st.cache_data(show_spinner=False)
 def run_cached_diarization(audio_bytes: bytes, filename: str):
-    with tempfile.TemporaryDirectory() as temp_dir:
-        input_path = Path(temp_dir) / Path(filename).name
-        input_path.write_bytes(audio_bytes)
+    audio = preprocess_bytes(audio_bytes, filename)
+    turns = AutomaticDiarizationService(
+        pipeline=load_diarization_model()
+    ).diarize(samples=audio.samples, sample_rate=audio.sample_rate, num_speakers=2)
+    return [(turn.start_seconds, turn.end_seconds, turn.speaker_id) for turn in turns]
 
-        audio = AudioPreprocessingPipeline().process(input_path)
 
-        diarization = AutomaticDiarizationService(
-            pipeline=load_diarization_model()
+@st.cache_data(show_spinner=False)
+def run_cached_role_identification(
+    audio_bytes: bytes, filename: str, reference_bytes: bytes, reference_filename: str
+):
+    call_audio = preprocess_bytes(audio_bytes, filename)
+    reference_audio = preprocess_bytes(reference_bytes, reference_filename)
+    speaker_turns = [
+        SpeakerTurn(start_seconds=start, end_seconds=end, speaker_id=speaker)
+        for start, end, speaker in run_cached_diarization(audio_bytes, filename)
+    ]
+    service = AutomaticRoleIdentificationService(model=load_role_identification_model())
+    return service.identify(
+        samples=call_audio.samples,
+        sample_rate=call_audio.sample_rate,
+        speaker_turns=speaker_turns,
+        agent_reference_samples=reference_audio.samples,
+        agent_reference_sample_rate=reference_audio.sample_rate,
+    )
+
+
+@st.cache_data(show_spinner=False)
+def run_cached_acoustic_analysis(audio_bytes: bytes, filename: str, role_rows: tuple):
+    """Cache by audio AND reviewed roles, so manual corrections are respected."""
+    audio = preprocess_bytes(audio_bytes, filename)
+    turns = [
+        SpeakerTurn(
+            start_seconds=float(start),
+            end_seconds=float(end),
+            speaker_id=str(speaker),
+            role=str(role),
         )
+        for start, end, speaker, role in role_rows
+    ]
+    customer_segments = CustomerAudioService().extract_customer_segments(
+        samples=audio.samples, sample_rate=audio.sample_rate, speaker_turns=turns
+    )
+    timeline = TemporalAcousticService().analyze(customer_segments)
+    features = EmotionAcousticFeaturesService().analyze(customer_segments)
+    return turns, timeline, features
 
-        turns = diarization.diarize(
-            samples=audio.samples,
-            sample_rate=audio.sample_rate,
-            num_speakers=2,
-        )
-
-        return [
-            (
-                turn.start_seconds,
-                turn.end_seconds,
-                turn.speaker_id,
-            )
-            for turn in turns
-        ]
 
 uploaded_file = st.file_uploader(
     "Upload a customer-service call",
     type=["wav", "mp3", "m4a", "mp4", "amr", "3gp"],
+    key="customer_call_audio",
+)
+agent_reference_file = st.file_uploader(
+    "Upload service agent reference voice (10–20 seconds)",
+    type=["wav", "mp3", "m4a", "mp4"],
+    key="agent_reference_audio",
 )
 
-# Clear upload-dependent results even when a new file has the same name.
 upload_identity = (
     (uploaded_file.name, hashlib.sha256(uploaded_file.getvalue()).hexdigest())
-    if uploaded_file is not None
-    else None
+    if uploaded_file is not None else None
 )
-if st.session_state.get("active_upload_identity") != upload_identity:
+reference_identity = (
+    (agent_reference_file.name, hashlib.sha256(agent_reference_file.getvalue()).hexdigest())
+    if agent_reference_file is not None else None
+)
+identity = (upload_identity, reference_identity)
+if st.session_state.get("active_audio_identity") != identity:
     for key in (
-        "analysis_results", "sinhala_results", "diarized_results",
-        "selected_agent_speaker", "active_agent_speaker",
+        "speaker_review_turns", "verified_speaker_turns", "speaker_role_editor",
+        "analysis_results", "role_scores", "role_margin", "review_identity",
     ):
         st.session_state.pop(key, None)
-    st.session_state["active_upload_identity"] = upload_identity
+    st.session_state["active_audio_identity"] = identity
 
 if uploaded_file is not None:
     st.audio(uploaded_file)
+if agent_reference_file is not None:
+    st.caption("Service agent reference recording")
+    st.audio(agent_reference_file)
 
-    st.info(
-        "For this first prototype, the recording must contain "
-        "two speakers. Confirm their roles before analysis."
-    )
+if uploaded_file is not None:
+    st.subheader("Automatic Speaker Identification")
+    st.caption("Designed for a two-speaker call. A clean agent reference is required.")
 
-    agent_speaker = st.selectbox(
-        "Which detected speaker is the service agent?",
-        ["SPEAKER_00", "SPEAKER_01"],
-        key="selected_agent_speaker",
-    )
+    if st.button("Detect Speakers and Identify Roles", type="primary"):
+        if agent_reference_file is None:
+            st.warning("Upload the agent reference voice before identifying roles.")
+        else:
+            try:
+                with st.spinner("Detecting speakers and matching the agent voice..."):
+                    audio_bytes = uploaded_file.getvalue()
+                    detected_turns = run_cached_diarization(audio_bytes, uploaded_file.name)
+                    role_mapping, scores, margin = run_cached_role_identification(
+                        audio_bytes, uploaded_file.name,
+                        agent_reference_file.getvalue(), agent_reference_file.name,
+                    )
+                    rows = [
+                        {
+                            "Start (s)": round(start, 2),
+                            "End (s)": round(end, 2),
+                            "Detected Speaker": speaker,
+                            "Verified Role": role_mapping[speaker],
+                        }
+                        for start, end, speaker in detected_turns
+                    ]
+                    st.session_state["speaker_review_turns"] = rows
+                    st.session_state["verified_speaker_turns"] = [dict(row) for row in rows]
+                    st.session_state["role_scores"] = scores
+                    st.session_state["role_margin"] = margin
+                    st.session_state.pop("speaker_role_editor", None)
+                    st.session_state.pop("analysis_results", None)
+                st.success("Automatic roles assigned. You can analyze immediately or edit them below.")
+            except Exception as exc:
+                st.error(f"Speaker identification failed: {exc}")
+                st.exception(exc)
 
-    # Role-dependent results must match the current speaker selection.
-    if st.session_state.get("active_agent_speaker") != agent_speaker:
-        st.session_state.pop("analysis_results", None)
-        st.session_state.pop("diarized_results", None)
-        st.session_state["active_agent_speaker"] = agent_speaker
+    if "speaker_review_turns" in st.session_state:
+        st.write("Voice similarity scores:", st.session_state.get("role_scores", {}))
+        margin = st.session_state.get("role_margin")
+        if margin is not None:
+            st.caption(f"Speaker similarity score margin: {margin:.3f} (not a calibrated confidence)")
+            if margin < 0.10:
+                st.warning("Close voice matches: review speaker roles before analysis.")
 
-    if st.button("Analyze Call"):
-        with st.spinner("Analyzing call..."):
-            audio_bytes = uploaded_file.getvalue()
+        st.subheader("Review Speaker Roles (Optional)")
+        reviewed_df = st.data_editor(
+            pd.DataFrame(st.session_state["speaker_review_turns"]),
+            column_config={
+                "Start (s)": st.column_config.NumberColumn(disabled=True),
+                "End (s)": st.column_config.NumberColumn(disabled=True),
+                "Detected Speaker": st.column_config.TextColumn(disabled=True),
+                "Verified Role": st.column_config.SelectboxColumn(
+                    options=["agent", "customer"], required=True
+                ),
+            },
+            disabled=["Start (s)", "End (s)", "Detected Speaker"],
+            hide_index=True,
+            width="stretch",
+            key="speaker_role_editor",
+        )
 
-            # First run performs diarization.
-            # Later runs reuse cached speaker timestamps.
-            start_time = time.perf_counter()
+        with st.expander("Listen to detected speaker segments"):
+            try:
+                review_audio = preprocess_bytes(uploaded_file.getvalue(), uploaded_file.name)
+                for index, row in enumerate(st.session_state["speaker_review_turns"]):
+                    start, end = float(row["Start (s)"]), float(row["End (s)"])
+                    if end - start < 0.1:
+                        continue
+                    sr = review_audio.sample_rate
+                    segment = review_audio.samples[int(start * sr):int(end * sr)]
+                    st.caption(f"Segment {index + 1}: {start:.1f}s–{end:.1f}s — {row['Detected Speaker']}")
+                    st.audio(segment, sample_rate=sr)
+            except Exception as exc:
+                st.warning(f"Could not play speaker segments: {exc}")
 
-            cached_turns = run_cached_diarization(
-                audio_bytes,
-                uploaded_file.name,
-            )
+        if st.button("Confirm Speaker Roles"):
+            st.session_state["verified_speaker_turns"] = reviewed_df.to_dict("records")
+            st.session_state.pop("analysis_results", None)
+            st.success("Your corrected roles will be used for analysis.")
 
-            diarization_seconds = (
-                time.perf_counter() - start_time
-            )
+        if st.button("Analyze Call", type="primary"):
+            verified_turns = st.session_state.get("verified_speaker_turns")
+            if not verified_turns:
+                st.warning("First click 'Detect Speakers and Identify Roles'.")
+            else:
+                try:
+                    with st.spinner("Analyzing customer acoustic features..."):
+                        start_time = time.perf_counter()
+                        role_rows = tuple(
+                            (
+                                float(row["Start (s)"]),
+                                float(row["End (s)"]),
+                                str(row["Detected Speaker"]),
+                                str(row["Verified Role"]),
+                            )
+                            for row in verified_turns
+                        )
+                        turns, timeline, features = run_cached_acoustic_analysis(
+                            uploaded_file.getvalue(), uploaded_file.name, role_rows
+                        )
+                        temporal_emotion = TemporalAcousticEmotionService().analyze(
+                            features
+                        )
+                        elapsed = time.perf_counter() - start_time
+                        st.session_state["analysis_results"] = {
+                            "identity": identity,
+                            "turns": turns,
+                            "timeline": timeline,
+                            "acoustic_features": features,
+                            "analysis_seconds": elapsed,
+                            "temporal_emotion": temporal_emotion,
+                        }
+                    st.success("Customer acoustic analysis completed.")
+                except Exception as exc:
+                    st.error(f"Analyze Call failed: {exc}")
+                    st.exception(exc)
 
-            # Reconstruct SpeakerTurn objects.
-
-            turns = [
-                SpeakerTurn(
-                    start_seconds=start,
-                    end_seconds=end,
-                    speaker_id=speaker,
-                )
-                for start, end, speaker in cached_turns
-            ]
-
-            customer_speaker = (
-                "SPEAKER_01"
-                if agent_speaker == "SPEAKER_00"
-                else "SPEAKER_00"
-            )
-
-            turns = DiarizationService().assign_roles(
-                turns,
-                {
-                    agent_speaker: "agent",
-                    customer_speaker: "customer",
-                },
-            )
-
-            # Preprocess audio for customer extraction.
-            with tempfile.TemporaryDirectory() as temp_dir:
-                input_path = (
-                    Path(temp_dir) / Path(uploaded_file.name).name
-                )
-                input_path.write_bytes(audio_bytes)
-
-                audio = AudioPreprocessingPipeline().process(
-                    input_path
-                )
-
-            customer_segments = (
-                CustomerAudioService().extract_customer_segments(
-                    samples=audio.samples,
-                    sample_rate=audio.sample_rate,
-                    speaker_turns=turns,
-                )
-            )
-
-            timeline = TemporalAcousticService().analyze(
-                customer_segments
-            )
-
-            transcription_start = time.perf_counter()
-            transcription_result = run_cached_transcription(
-                audio_bytes,
-                uploaded_file.name,
-            )
-
-            transcription_seconds = (
-                time.perf_counter() - transcription_start
-            )
-
-            # Save results so they survive Streamlit reruns.
-            st.session_state["analysis_results"] = {
-                "filename": uploaded_file.name,
-                "turns": turns,
-                "timeline": timeline,
-                "diarization_seconds": diarization_seconds,
-                "transcription": transcription_result,
-                "transcription_seconds": transcription_seconds,
-            }
-
-    # Display saved results outside the button condition.
     results = st.session_state.get("analysis_results")
-
-    if results is not None and results["filename"] == uploaded_file.name:
-        st.success("Call processing completed.")
-
-        st.info(
-            f"Diarization lookup time: "
-            f"{results['diarization_seconds']:.2f} seconds"
-        )
-
+    if results is not None and results.get("identity") == identity:
         st.subheader("Speaker Timeline")
-
-        speaker_df = pd.DataFrame(
-            [
-                {
-                    "Start (s)": turn.start_seconds,
-                    "End (s)": turn.end_seconds,
-                    "Speaker": turn.speaker_id,
-                    "Role": turn.role,
-                }
-                for turn in results["turns"]
-            ]
-        )
-
-        st.dataframe(
-            speaker_df,
-            use_container_width=True,
-        )
+        speaker_df = pd.DataFrame([
+            {
+                "Start (s)": turn.start_seconds,
+                "End (s)": turn.end_seconds,
+                "Speaker": turn.speaker_id,
+                "Role": turn.role,
+            }
+            for turn in results["turns"]
+        ])
+        st.dataframe(speaker_df, width="stretch", hide_index=True)
+        st.caption(f"Analysis time (cached if repeated): {results['analysis_seconds']:.2f} seconds")
 
         st.subheader("Customer Vocal Energy Over Time")
+        energy_df = pd.DataFrame([
+            {
+                "Time (s)": (point.start_seconds + point.end_seconds) / 2,
+                "RMS Energy": point.rms_energy,
+            }
+            for point in results["timeline"]
+        ])
+        if not energy_df.empty:
+            st.line_chart(energy_df.set_index("Time (s)"))
+        else:
+            st.warning("No customer speech segments were detected. Review the roles.")
 
-        energy_df = pd.DataFrame(
-            [
+        st.subheader("Customer Acoustic Emotion Evidence")
+        features = results.get("acoustic_features", [])
+        if features:
+            acoustic_df = pd.DataFrame([
+                {
+                    "Start (s)": round(item.start_seconds, 2),
+                    "End (s)": round(item.end_seconds, 2),
+                    "RMS Energy": round(item.rms_energy, 4),
+                    "Energy Variability": round(item.energy_variability, 4),
+                    "Silence Ratio": round(item.silence_ratio, 3),
+                    "Median Pitch (Hz)": item.median_pitch_hz,
+                    "Pitch Variability (Hz)": item.pitch_variability_hz,
+                }
+                for item in features
+            ])
+            st.dataframe(acoustic_df, width="stretch", hide_index=True)
+            pitch_df = acoustic_df[["Start (s)", "Median Pitch (Hz)"]].dropna()
+            if not pitch_df.empty:
+                st.subheader("Customer Pitch Over Time")
+                st.line_chart(pitch_df.set_index("Start (s)"))
+            else:
+                st.info("No usable pitch estimates for these segments.")
+            st.caption(
+                "Acoustic measurements are emotion-related evidence, not validated "
+                "emotion labels. Speaker identification may also contain errors."
+            )
+        else:
+            st.info("No customer acoustic features available. Check speaker roles and audio length.")
+
+        
+        st.subheader("Temporal Customer Vocal Activation")
+
+        temporal_points = results.get("temporal_emotion", [])
+
+        if temporal_points:
+            temporal_df = pd.DataFrame([
                 {
                     "Time (s)": (
                         point.start_seconds + point.end_seconds
                     ) / 2,
-                    "RMS Energy": point.rms_energy,
+                    "Activation Score": point.activation_score,
+                    "Uncertainty": point.uncertainty,
+                    "Trend": point.trend,
                 }
-                for point in results["timeline"]
-            ]
-        )
+                for point in temporal_points
+            ])
 
-        if not energy_df.empty:
             st.line_chart(
-                energy_df.set_index("Time (s)")["RMS Energy"]
-            )
-        else:
-            st.warning("No customer segments were detected.")
-
-        st.subheader("Sinhala Call Transcription")
-
-        st.caption(
-            "Automatic transcription of the complete call. "
-            "Use Generate Diarized Transcript below for speaker-level alignment."
-        )
-
-        st.write("**Raw Whisper transcript**")
-        st.text_area(
-            "Raw transcript",
-            value=results["transcription"]["raw_text"],
-            height=140,
-            disabled=True,
-        )
-
-        st.write("**Normalized transcript**")
-        st.text_area(
-            "Normalized transcript",
-            value=results["transcription"]["normalized_text"],
-            height=140,
-            disabled=True,
-        )
-
-        st.info(
-            f"Transcription lookup time: "
-            f"{results['transcription_seconds']:.2f} seconds"
-        )
-
-        st.caption(
-            "RMS energy measures acoustic intensity, not emotion. "
-            "Emotion inference and service-context reasoning "
-            "will be added later."
-        )
-
-
-# Run Sinhala ASR separately from diarization.
-if uploaded_file is not None:
-    st.subheader("Sinhala Call Transcription")
-
-    if st.button("Transcribe in Sinhala", key="sinhala_asr_button"):
-        with st.spinner(
-            "Transcribing Sinhala audio. This may take a few minutes..."
-        ):
-            sinhala_results = run_cached_sinhala_transcription(
-                uploaded_file.getvalue(),
-                uploaded_file.name,
-            )
-
-        st.session_state["sinhala_results"] = sinhala_results
-
-    if "sinhala_results" in st.session_state:
-        for segment in st.session_state["sinhala_results"]:
-            st.markdown(
-                f"**[{segment['start_seconds']:.1f}s – "
-                f"{segment['end_seconds']:.1f}s]**"
-            )
-
-            st.write(segment["normalized_text"])
-
-            with st.expander("Raw transcript and vocabulary review"):
-                st.write("**Raw transcription:**")
-                st.write(segment["raw_text"])
-
-                for correction in segment["corrections"]:
-                    st.write(
-                        f"Corrected: {correction['original']} "
-                        f"→ {correction['replacement']}"
-                    )
-
-                for suggestion in segment["review_suggestions"]:
-                    st.warning(
-                        f"Review: {suggestion['original']} "
-                        f"→ {suggestion['suggested_replacement']}"
-                    )
-
-if uploaded_file is not None:
-    st.subheader("Diarized Sinhala Transcription")
-
-    if st.button(
-        "Generate Diarized Transcript",
-        key="diarized_transcript_button",
-    ):
-        with st.spinner(
-            "Matching Sinhala speech to speakers..."
-        ):
-            diarized_results = run_cached_diarized_transcription(
-                uploaded_file.getvalue(),
-                uploaded_file.name,
-                agent_speaker,
-            )
-
-            st.session_state["diarized_results"] = diarized_results
-
-            customer_emotion_cues = SinhalaEmotionCueService().analyze(
-                diarized_results
-            )
-
-            st.session_state["customer_emotion_cues"] = customer_emotion_cues
-
-            # Reconstruct customer speaker turns from the diarized transcript.
-            customer_turns = [
-                SpeakerTurn(
-                    start_seconds=turn["start_seconds"],
-                    end_seconds=turn["end_seconds"],
-                    speaker_id=turn["speaker_id"],
-                    role=turn["role"],
-                )
-                for turn in diarized_results
-                if turn["role"] == "customer"
-            ]
-
-            # Load the uploaded recording as 16 kHz mono audio.
-            with tempfile.TemporaryDirectory() as temp_dir:
-                audio_path = Path(temp_dir) / Path(uploaded_file.name).name
-                audio_path.write_bytes(uploaded_file.getvalue())
-
-                audio = AudioPreprocessingPipeline().process(audio_path)
-
-            # Extract customer-only audio segments.
-            customer_segments = CustomerAudioService().extract_customer_segments(
-                samples=audio.samples,
-                sample_rate=audio.sample_rate,
-                speaker_turns=customer_turns,
-            )
-
-            # Extract energy, pauses, and pitch from customer speech.
-            acoustic_features = EmotionAcousticFeaturesService().analyze(
-                customer_segments
-            )
-
-            # Fuse transcript cues with acoustic evidence over time.
-            temporal_results = TemporalEmotionFusionService().analyze(
-                text_cues=customer_emotion_cues,
-                acoustic_features=acoustic_features,
-            )
-
-            st.session_state["temporal_emotion_results"] = temporal_results
-
-    if "diarized_results" in st.session_state:
-        for turn in st.session_state["diarized_results"]:
-            speaker_label = (
-                "Service Agent"
-                if turn["role"] == "agent"
-                else "Customer"
-            )
-
-            st.markdown(
-                f"**{speaker_label} — {turn['speaker_id']}** "
-                f"({turn['start_seconds']:.1f}s – "
-                f"{turn['end_seconds']:.1f}s)"
-            )
-
-            st.write(turn["normalized_text"])
-
-            with st.expander("Raw text and vocabulary review"):
-                st.write(turn["raw_text"])
-
-                for suggestion in turn["review_suggestions"]:
-                    st.warning(
-                        f"{suggestion['original']} "
-                        f"→ {suggestion['replacement']} "
-                        "(review required)"
-                )
-    if "customer_emotion_cues" in st.session_state:
-        st.subheader("Customer Emotion Cues Over Time")
-
-        for cue in st.session_state["customer_emotion_cues"]:
-            matching_turns = [
-                turn
-                for turn in st.session_state.get("diarized_results", [])
-                if turn["role"] == "customer"
-                and abs(turn["start_seconds"] - cue.start_seconds) < 0.1
-        ]
-
-            customer_text = (
-                matching_turns[0]["normalized_text"]
-                if matching_turns
-                else ""
-            )
-
-            with st.container(border=True):
-                st.markdown(
-                    f"**Customer: {cue.start_seconds:.1f}s – "
-                    f"{cue.end_seconds:.1f}s**"
-                )
-
-                st.write(
-                    f"Frustration cues: {cue.frustration_score:.2f} | "
-                    f"Satisfaction cues: {cue.satisfaction_score:.2f} | "
-                    f"Uncertainty cues: {cue.uncertainty_score:.2f}"
-                )
-
-                st.caption("Customer transcript:")
-                st.write(
-                    customer_text if customer_text
-                    else "(No transcript available)"
-                )
-
-                if cue.matched_cues:
-                    st.success(
-                        "Matched evidence: " + ", ".join(cue.matched_cues)
-                )
-                else:
-                    st.caption(
-                    "No matching emotion-related phrases detected."
-                )
-
-    if "temporal_emotion_results" in st.session_state:
-        st.subheader("Temporal Customer Emotion Evidence")
-
-        temporal_results = st.session_state["temporal_emotion_results"]
-
-        if temporal_results:
-            timeline_data = pd.DataFrame(
-                [
-                    {
-                        "Time (s)": (
-                            point.start_seconds + point.end_seconds
-                        ) / 2,
-                        "Frustration evidence": point.frustration_evidence,
-                        "Satisfaction evidence": point.satisfaction_evidence,
-                    }
-                    for point in temporal_results
+                temporal_df.set_index("Time (s)")[
+                    ["Activation Score", "Uncertainty"]
                 ]
             )
 
-            st.line_chart(
-                timeline_data.set_index("Time (s)")
+            st.dataframe(
+                temporal_df,
+                width="stretch",
+                hide_index=True,
             )
 
-            for point in temporal_results:
+            for point in temporal_points:
                 with st.expander(
-                    f"{point.start_seconds:.1f}s – "
+                    f"{point.start_seconds:.1f}s–"
                     f"{point.end_seconds:.1f}s | "
-                    f"Trend: {point.trend}"
+                    f"{point.trend}"
                 ):
                     st.write(
-                        f"Frustration evidence: "
-                        f"{point.frustration_evidence:.2f}"
+                        f"Activation score: {point.activation_score:.2f}"
                     )
-
                     st.write(
-                        f"Satisfaction evidence: "
-                        f"{point.satisfaction_evidence:.2f}"
+                        f"Heuristic uncertainty: {point.uncertainty:.2f}"
                     )
+                    for item in point.evidence:
+                        st.write(f"- {item}")
 
-                    st.write(
-                        f"Uncertainty indicator: "
-                        f"{point.uncertainty:.2f}"
-                    )
-
-                    if point.evidence:
-                        st.write("Evidence:")
-                        for item in point.evidence:
-                            st.write(f"- {item}")
-                    else:
-                        st.caption("Insufficient recognized evidence.")
+            st.caption(
+                "Activation is relative to this call. "
+                "It is not an anger or satisfaction probability."
+            )
         else:
-            st.warning("No customer emotion timeline was generated.")
+            st.info("No temporal acoustic evidence available.")
+

@@ -60,7 +60,7 @@ class SinhalaASRService:
                 predicted_ids = self.model.generate(
                     inputs.input_features,
                     max_new_tokens=224,
-                    num_beams=1,
+                    num_beams=3,
                     do_sample=False,
                 )
 
