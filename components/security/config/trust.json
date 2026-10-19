@@ -12,5 +12,5 @@
     "review": 0.3
   },
   "severe_violation_cap": 0.15,
-  "note": "Initial PP1 parameters. Final values must be tuned on validation data."
+  "note": "Current adaptive trust parameters used by the security service."
 }

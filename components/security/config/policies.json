@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "description": "Synthetic PP1 policy configuration. Replace or extend only through documented experiment revisions.",
+  "description": "Local enterprise access policy used by the Security Intelligence service.",
   "always_block_resources": [
     "credential_store",
     "raw_api_keys",

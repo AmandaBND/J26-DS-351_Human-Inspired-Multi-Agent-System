@@ -56,3 +56,13 @@ data/attestation/*.jsonl
 data/processed/monitor_reliability_features*.csv
 
 !data/attestation/.gitkeep
+data/benchmark/reliability/*.jsonl
+data/benchmark/reliability/*_features.csv
+models/reliability/*.joblib
+
+results/system_resilience/event_level_results.csv
+results/system_resilience/monitor_trust_history.csv
+
+data/security_workspace.db
+data/security_workspace.db-shm
+data/security_workspace.db-wal

@@ -9,4 +9,10 @@ python-dotenv>=1,<2
 transformers>=4.51,<6
 torch>=2.4,<3
 
+xgboost
+matplotlib
+joblib
+
+streamlit>=1.40,<2
+
 
