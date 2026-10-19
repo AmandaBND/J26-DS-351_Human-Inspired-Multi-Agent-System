@@ -1,0 +1,12 @@
+﻿complaint_id,complaint_text,true_primary,pred_primary,true_secondary,pred_secondary,true_intensity,pred_intensity,primary_correct,intensity_correct,multilabel_correct
+EMO020,I expected better communication from your service department.,Disappointment,Neutral,,,Medium,Low,False,False,False
+EMO024,I am very disappointed that our complaint has remained unresolved.,Disappointment,Disappointment,,,High,Medium,True,False,True
+EMO026,I am worried that the printer breakdown will delay our customer invoices.,Concern,Concern,,,Medium,Low,True,False,True
+EMO027,I am concerned that the air conditioner may stop working during business hours.,Concern,Concern,,,Medium,Low,True,False,True
+EMO029,I am concerned that the technician may not arrive before our scheduled meeting.,Concern,Concern,,,Medium,Low,True,False,True
+EMO036,I am angry about the broken promises and lack of accountability.,Anger,Anger,,,Medium,High,True,False,True
+EMO040,We are very satisfied with how efficiently the copier problem was resolved.,Satisfaction,Satisfaction,,,High,Medium,True,False,True
+EMO043,I am worried about our pending invoices and frustrated by the slow technician response.,Concern,Frustration,Frustration,Concern,Medium,Medium,False,True,True
+EMO045,I am concerned about the recurring fault and frustrated that it has not been fixed.,Concern,Frustration,Frustration,Concern,Medium,Medium,False,True,True
+EMO046,"I appreciate the technician's effort, but I am disappointed by the long waiting time.",Disappointment,Disappointment,Satisfaction,,Medium,Medium,True,True,False
+EMO051,"Although I am satisfied with the final repair, I am disappointed that the process took so long.",Satisfaction,Disappointment,Disappointment,Satisfaction,Medium,Medium,False,True,True

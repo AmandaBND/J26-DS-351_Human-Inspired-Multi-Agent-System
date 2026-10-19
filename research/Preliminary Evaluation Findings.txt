@@ -1,0 +1,7 @@
+### Preliminary Evaluation Findings
+
+The proposed context-aware customer emotion analysis agent was evaluated using a synthetic dataset of 51 reviewed customer complaints representing six primary emotion categories. The agent achieved 92.16% primary-emotion classification accuracy, 93.86% macro precision, 91.60% macro recall, and a macro F1-score of 92.18%. Sentiment classification accuracy was 84.31%, while emotion intensity classification accuracy was 86.27%.
+
+For multi-label emotion identification, the agent achieved a micro F1-score of 98.04% and exact-match accuracy of 96.08%. All 74 predicted evidence phrases were verified as exact substrings of their respective complaints, although none of the reference evidence sets matched the predictions exactly.
+
+The results indicate promising preliminary performance, particularly in identifying anger, frustration, and neutral expressions. However, lower recall for concern and disagreements in sentiment and intensity classification highlight opportunities for further improvement. Additional evaluation using independently annotated, real-world customer complaints is required to establish generalizability.

@@ -1,0 +1,56 @@
+
+===============================================
+DAY 4 - CUSTOMER EMOTION AGENT EVALUATION
+===============================================
+
+Total Complaints       : 51
+Evaluated Complaints   : 51
+Failed Predictions     : 0
+
+PRIMARY EMOTION CLASSIFICATION
+-----------------------------------------------
+Accuracy               : 92.16%
+Macro Precision        : 93.86%
+Macro Recall           : 91.60%
+Macro F1-Score         : 92.18%
+Weighted F1-Score      : 92.03%
+
+SENTIMENT AND INTENSITY
+-----------------------------------------------
+Sentiment Accuracy     : 84.31%
+Intensity Accuracy     : 86.27%
+
+MULTI-LABEL EMOTION DETECTION
+-----------------------------------------------
+Micro F1-Score         : 98.04%
+Macro F1-Score         : 97.87%
+Exact Match Accuracy   : 96.08%
+
+EVIDENCE EXTRACTION
+-----------------------------------------------
+Evidence Validity      : 100.00%
+Valid Evidence Phrases : 74/74
+Evidence Exact Match   : 0.00%
+Reference Evidence Rows: 41
+
+ERROR ANALYSIS
+-----------------------------------------------
+Records With Errors    : 11
+
+PER-CLASS PERFORMANCE
+-----------------------------------------------
+                precision    recall  f1-score   support
+
+         Anger       1.00      1.00      1.00         7
+       Concern       1.00      0.75      0.86         8
+Disappointment       0.89      0.89      0.89         9
+   Frustration       0.83      1.00      0.91        10
+       Neutral       0.91      1.00      0.95        10
+  Satisfaction       1.00      0.86      0.92         7
+
+      accuracy                           0.92        51
+     macro avg       0.94      0.92      0.92        51
+  weighted avg       0.93      0.92      0.92        51
+
+
+===============================================

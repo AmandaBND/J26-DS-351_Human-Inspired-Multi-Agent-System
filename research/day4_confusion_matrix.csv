@@ -1,0 +1,7 @@
+﻿Actual / Predicted,Anger,Concern,Disappointment,Frustration,Neutral,Satisfaction
+Anger,7,0,0,0,0,0
+Concern,0,6,0,2,0,0
+Disappointment,0,0,8,0,1,0
+Frustration,0,0,0,10,0,0
+Neutral,0,0,0,0,10,0
+Satisfaction,0,0,1,0,0,6
