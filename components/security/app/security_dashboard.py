@@ -254,13 +254,18 @@ service = get_service()
 
 
 MONITOR_LABELS = {
-    "semantic-monitor": "Prompt Protection",
+    "semantic-monitor": "Prompt-Aware Data Minimization",
     "policy-monitor": "Access Policy",
     "behavior-monitor": "Behavior Protection",
 }
 
 FRIENDLY_REASONS = {
-    "PROMPT_ATTACK_HIGH_RISK": "Suspicious instruction pattern detected",
+    "MINIMIZED_DATA_READY": "Only necessary approved data fields selected",
+    "RESOURCE_NOT_AUTHORIZED": "Agent does not have permission for this data",
+    "INSUFFICIENT_SAFE_FIELDS": "No safe required fields identified; review needed",
+    "RESOURCE_SCHEMA_UNKNOWN": "No approved field policy exists for this resource",
+    "NO_DATA_REQUEST": "No data retrieval requested",
+    "PROMPT_ATTACK_HIGH_RISK": "Historical prompt attack detected",
     "PROMPT_ATTACK_REVIEW": "Message requires additional review",
     "PROMPT_BENIGN": "No suspicious instruction pattern detected",
     "ROLE_BLOCKED_RESOURCE": "This agent is not permitted to access the requested data",
@@ -785,6 +790,12 @@ elif page == "Inspect request":
         for column, result in zip(monitor_cols, output["monitor_results"]):
             with column:
                 monitor_card(result, output["reliability"][result.monitor_id])
+
+        selection = next((item.metadata for item in output["monitor_results"]
+                          if item.monitor_id == "semantic-monitor"), {})
+        if selection.get("resource"):
+            st.caption("Selected data fields: " + ", ".join(selection.get("selected_fields", [])))
+            st.caption("Removed fields: " + ", ".join(selection.get("removed_fields", [])))
 
         if output["database_action"] == "EXECUTED":
             st.success("Protected action completed.")

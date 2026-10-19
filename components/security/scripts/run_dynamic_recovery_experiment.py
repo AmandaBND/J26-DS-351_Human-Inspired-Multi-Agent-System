@@ -48,9 +48,6 @@ def build_trust_estimator() -> AdaptiveTrustEstimator:
     return AdaptiveTrustEstimator(
         initial_trust=float(config["initial_trust"]),
         alpha=float(config["alpha"]),
-        model_weight=float(config["weights"]["model_reliability"]),
-        challenge_weight=float(config["weights"]["challenge_accuracy"]),
-        policy_weight=float(config["weights"]["policy_integrity"]),
         active_threshold=float(config["thresholds"]["active"]),
         reduced_threshold=float(config["thresholds"]["reduced"]),
         review_threshold=float(config["thresholds"]["review"]),

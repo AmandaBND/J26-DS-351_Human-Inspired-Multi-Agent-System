@@ -14,6 +14,7 @@ class MonitorType(str, Enum):
     """Specialized role performed by a security monitor."""
 
     SEMANTIC_PROMPT = "SEMANTIC_PROMPT"
+    DATA_MINIMIZATION = "DATA_MINIMIZATION"
     POLICY_TOOL = "POLICY_TOOL"
     BEHAVIOR_ANOMALY = "BEHAVIOR_ANOMALY"
 

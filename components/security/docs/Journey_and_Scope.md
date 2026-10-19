@@ -1,3 +1,9 @@
+## October 19 implementation update
+
+The active Semantic/Prompt Monitor has been replaced by a Prompt-Aware Data Minimization and Least-Privilege Enforcement Monitor. Its internal monitor ID remains `semantic-monitor` to keep earlier experiment records usable. The original Prompt Guard work and earlier results are preserved as historical PP1 evidence; they are not results for this replacement. The Policy and Behavior Monitors, reliability-feature extraction, ML training, attestation, and trust-weighted fusion remain part of the component. Adaptive trust now uses the minimum available independent reliability signal rather than manually assigned evidence weights. The optional LLM column selector is not used by the default local baseline.
+
+---
+
 # 01 - My Research Journey and Research Scope
 
 ## Research Component

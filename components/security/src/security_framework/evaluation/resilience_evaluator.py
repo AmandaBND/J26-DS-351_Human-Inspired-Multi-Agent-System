@@ -142,15 +142,11 @@ class SystemResilienceEvaluator:
 
     def _trust_estimator(self) -> AdaptiveTrustEstimator:
         config = self._read_json(self.trust_config_file)
-        weights = config["weights"]
         thresholds = config["thresholds"]
 
         return AdaptiveTrustEstimator(
             initial_trust=float(config["initial_trust"]),
             alpha=float(config["alpha"]),
-            model_weight=float(weights["model_reliability"]),
-            challenge_weight=float(weights["challenge_accuracy"]),
-            policy_weight=float(weights["policy_integrity"]),
             active_threshold=float(thresholds["active"]),
             reduced_threshold=float(thresholds["reduced"]),
             review_threshold=float(thresholds["review"]),
