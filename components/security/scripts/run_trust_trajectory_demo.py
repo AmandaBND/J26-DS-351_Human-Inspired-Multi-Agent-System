@@ -30,15 +30,6 @@ def main() -> None:
             "initial_trust"
         ],
         alpha=config["alpha"],
-        model_weight=config["weights"][
-            "model_reliability"
-        ],
-        challenge_weight=config["weights"][
-            "challenge_accuracy"
-        ],
-        policy_weight=config["weights"][
-            "policy_integrity"
-        ],
         active_threshold=config[
             "thresholds"
         ]["active"],

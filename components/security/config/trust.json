@@ -1,16 +1,11 @@
 {
   "initial_trust": 0.85,
   "alpha": 0.7,
-  "weights": {
-    "model_reliability": 0.5,
-    "challenge_accuracy": 0.3,
-    "policy_integrity": 0.2
-  },
+  "evidence_rule": "minimum_available",
   "thresholds": {
     "active": 0.7,
     "reduced": 0.5,
     "review": 0.3
   },
-  "severe_violation_cap": 0.15,
-  "note": "Current adaptive trust parameters used by the security service."
+  "severe_violation_cap": 0.15
 }

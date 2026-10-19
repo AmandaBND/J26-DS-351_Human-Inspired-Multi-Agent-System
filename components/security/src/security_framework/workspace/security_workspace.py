@@ -29,7 +29,7 @@ from security_framework.monitors import (
     BehaviorAnomalyMonitor,
     MonitorResult,
     PolicyToolMonitor,
-    SemanticPromptMonitor,
+    DataMinimizationMonitor,
 )
 from security_framework.trust import AdaptiveTrustEstimator
 
@@ -627,6 +627,18 @@ class SecurityWorkspaceDatabase:
             )
         return self.read_table(table_name, limit=limit)
 
+    def fetch_selected_resource(self, resource_name: str, fields: list[str], limit: int = 10) -> pd.DataFrame:
+        table_name = self.BUSINESS_TABLES.get(resource_name)
+        if not table_name or not fields:
+            raise ValueError("A recognized resource and selected columns are required")
+        with self._connect() as connection:
+            available = {row[1] for row in connection.execute(f'PRAGMA table_info("{table_name}")')}
+            if any(field not in available for field in fields):
+                raise ValueError("Unknown selected field")
+            projection = ", ".join('"' + field + '"' for field in fields)
+            return pd.read_sql_query(f'SELECT {projection} FROM "{table_name}" LIMIT ?',
+                                     connection, params=(int(limit),))
+
     def reset_security_activity(
         self,
         *,
@@ -671,14 +683,9 @@ class SecurityWorkspaceService:
             self.project_root / "config" / "policies.json"
         )
 
-        monitor_settings = self._read_json(
-            self.project_root / "config" / "monitor_settings.json"
-        )["semantic_prompt_monitor"]
-
-        self.semantic_monitor = SemanticPromptMonitor(
-            model_id=monitor_settings["model_id"],
-            review_threshold=float(monitor_settings["review_threshold"]),
-            block_threshold=float(monitor_settings["block_threshold"]),
+        self.semantic_monitor = DataMinimizationMonitor(
+            self.project_root / "config" / "data_minimization.json",
+            self.project_root / "config" / "policies.json",
         )
 
         self.behavior_monitor = BehaviorAnomalyMonitor(
@@ -730,14 +737,10 @@ class SecurityWorkspaceService:
         return json.loads(path.read_text(encoding="utf-8"))
 
     def _make_trust_estimator(self) -> AdaptiveTrustEstimator:
-        weights = self.trust_config["weights"]
         thresholds = self.trust_config["thresholds"]
         return AdaptiveTrustEstimator(
             initial_trust=float(self.trust_config["initial_trust"]),
             alpha=float(self.trust_config["alpha"]),
-            model_weight=float(weights["model_reliability"]),
-            challenge_weight=float(weights["challenge_accuracy"]),
-            policy_weight=float(weights["policy_integrity"]),
             active_threshold=float(thresholds["active"]),
             reduced_threshold=float(thresholds["reduced"]),
             review_threshold=float(thresholds["review"]),
@@ -770,6 +773,8 @@ class SecurityWorkspaceService:
             return None, None
 
         summary = self._read_json(summary_file)
+        if summary.get("monitor_set_version") != "minimization-v1":
+            return None, None
         model_name = summary.get("best_model_by_f1_then_auprc")
 
         if not model_name:
@@ -1136,12 +1141,9 @@ class SecurityWorkspaceService:
         features = self.build_live_feature_row(monitor_id)
         p_compromised = self._predict_p_compromised(features)
 
-        # If trained artifacts are unavailable, hold neutral probability.
-        model_probability = 0.50 if p_compromised is None else p_compromised
-
         update = self.trust_estimator.update(
             monitor_id=monitor_id,
-            p_compromised=model_probability,
+            p_compromised=p_compromised,
             challenge_accuracy=features.get("challenge_accuracy"),
             policy_violation_rate=features.get("policy_violation_rate"),
         )
@@ -1214,62 +1216,35 @@ class SecurityWorkspaceService:
 
         return research_decision, "ADAPTIVE_TRUST_WEIGHTED_FUSION"
 
-    def _perform_guarded_action(
-        self,
-        *,
-        event: SecurityEvent,
-        final_decision: SecurityDecision,
-    ) -> tuple[str | None, pd.DataFrame | dict[str, Any] | None]:
-        if event.event_type == EventType.RESOURCE_ACCESS:
-            if final_decision == SecurityDecision.BLOCK:
-                return "DENIED", None
-            if final_decision == SecurityDecision.REVIEW:
-                return "HELD_FOR_REVIEW", None
-
-            if not event.requested_resource:
-                return "NO_RESOURCE", None
-
-            try:
-                records = self.db.fetch_resource(event.requested_resource)
-                return "EXECUTED", records
-            except ValueError as exc:
-                return "RESOURCE_NOT_MAPPED", {"message": str(exc)}
-
+    def _perform_guarded_action(self, *, event, final_decision):
+        if final_decision == SecurityDecision.BLOCK:
+            return "DENIED", None
+        if final_decision == SecurityDecision.REVIEW:
+            return "HELD_FOR_REVIEW", None
+        if event.event_type not in {EventType.RESOURCE_ACCESS, EventType.TOOL_REQUEST}:
+            return None, None
+        policy = self.policy_monitor.evaluate(event)
+        if policy.decision != SecurityDecision.ALLOW:
+            return "DENIED", None
+        minimization = self.semantic_monitor.evaluate(event)
+        if minimization.decision != SecurityDecision.ALLOW:
+            return "HELD_FOR_REVIEW" if minimization.decision == SecurityDecision.REVIEW else "DENIED", None
         if event.event_type == EventType.TOOL_REQUEST:
-            if final_decision == SecurityDecision.BLOCK:
-                return "DENIED", None
-            if final_decision == SecurityDecision.REVIEW:
-                return "HELD_FOR_REVIEW", None
-
             tool_name = str(event.metadata.get("tool_name") or "")
-            return "EXECUTED", self.run_tool(tool_name)
+            if tool_name == "ticket_update":
+                return "EXECUTED", {"status": "updated", "ticket_id": "TICKET-LOCAL-001"}
+        resource = minimization.metadata["resource"]
+        columns = minimization.metadata["selected_fields"]
+        if not columns:
+            return "HELD_FOR_REVIEW", None
+        frame = self.db.fetch_selected_resource(resource, columns)
+        for field, action in minimization.metadata["field_actions"].items():
+            if action == "PSEUDONYMIZE" and field in frame:
+                frame[field] = frame[field].map(self.semantic_monitor.pseudonymize)
+        return "EXECUTED", frame
 
-        return None, None
-
-    def run_tool(self, tool_name: str) -> pd.DataFrame | dict[str, Any]:
-        tool_map = {
-            "complaint_search": "complaint_records",
-            "kpi_query": "employee_kpi_records",
-            "performance_summary": "approved_performance_history",
-            "service_lookup": "service_history",
-            "warranty_check": "warranty_records",
-        }
-
-        if tool_name in tool_map:
-            return self.db.fetch_resource(tool_map[tool_name])
-
-        if tool_name == "ticket_update":
-            return {
-                "status": "updated",
-                "ticket_id": "TICKET-LOCAL-001",
-                "message": "Ticket update completed in the local service workspace.",
-            }
-
-        return {
-            "status": "not_available",
-            "tool": tool_name or "unknown",
-            "message": "This tool is not connected in the current workspace.",
-        }
+    def run_tool(self, tool_name: str):
+        raise PermissionError("Tool data access must pass through evaluate_event")
 
     def evaluate_event(
         self,
