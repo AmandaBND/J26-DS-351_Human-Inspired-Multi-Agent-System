@@ -1,0 +1,18 @@
+{
+  "feature_order": [
+    "tool_call_frequency",
+    "restricted_resource_attempts",
+    "failed_authorization_count",
+    "external_api_calls",
+    "database_query_count",
+    "sensitive_resource_attempts"
+  ],
+  "n_estimators": 200,
+  "contamination": "auto",
+  "random_state": 42,
+  "minimum_baseline_rows": 30,
+  "review_threshold": 0.9,
+  "block_threshold": 0.98,
+  "window_definition": "One row represents a synthetic 10-action application-agent observation window.",
+  "note": "Explicitly synthetic PP1 engineering baseline; not final research data."
+}

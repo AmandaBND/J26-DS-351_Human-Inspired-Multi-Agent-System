@@ -1,0 +1,6 @@
+{
+  "best_model_by_f1_then_auprc": "random_forest",
+  "best_f1": 0.9846153846153847,
+  "best_auprc": 1.0,
+  "warning": "These are preliminary PP1 results on a controlled synthetic reliability benchmark."
+}

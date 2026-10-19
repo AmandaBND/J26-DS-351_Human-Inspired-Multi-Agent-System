@@ -42,3 +42,12 @@ components/security/data/raw_company_data/
 
 secrets/
 credentials/
+
+external/
+data/monitor_logs/*.jsonl
+data/monitor_logs/*.csv
+data/public/injecagent/*.jsonl
+data/public/injecagent/provenance.json
+
+!data/monitor_logs/.gitkeep
+!data/public/injecagent/README.md
