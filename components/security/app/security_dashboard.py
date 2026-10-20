@@ -254,7 +254,8 @@ service = get_service()
 
 
 MONITOR_LABELS = {
-    "semantic-monitor": "Prompt-Aware Data Minimization",
+    "semantic-monitor": "Prompt Injection Protection",
+    "data-minimization-monitor": "Prompt-Aware Data Minimization",
     "policy-monitor": "Access Policy",
     "behavior-monitor": "Behavior Protection",
 }
@@ -281,6 +282,7 @@ FRIENDLY_REASONS = {
     "BEHAVIOR_NORMAL": "Activity pattern is within the normal range",
     "MONITOR_UNAVAILABLE": "Protection service is temporarily unavailable",
     "MONITOR_RUNTIME_ERROR": "Protection service could not complete the check",
+    "FIELD_SELECTOR_UNAVAILABLE": "Local field selector unavailable; data access held for review",
     "EVENT_ASSESSED_LOW_RISK": "Request assessed as low risk",
     "EVENT_ASSESSED_HIGH_RISK": "Request assessed as high risk",
     "EVENT_REQUIRES_REVIEW": "Request requires review",
@@ -618,7 +620,7 @@ if page == "Overview":
     )
 
     st.markdown(
-        '<div class="status-strip"><span class="status-pill">● Protection active</span><span class="status-pill">● 3 security monitors online</span><span class="status-pill">● Local data service connected</span></div>',
+        '<div class="status-strip"><span class="status-pill">● Security checks enabled</span><span class="status-pill">● 4 security monitors configured</span><span class="status-pill">● Local data service connected</span></div>',
         unsafe_allow_html=True,
     )
 
@@ -637,8 +639,8 @@ if page == "Overview":
 
     st.markdown("### Protection status")
     states = service.db.get_trust_states()
-    monitor_cols = st.columns(3)
-    for column, monitor_id in zip(monitor_cols, ["semantic-monitor", "policy-monitor", "behavior-monitor"]):
+    monitor_cols = st.columns(4)
+    for column, monitor_id in zip(monitor_cols, ["semantic-monitor", "data-minimization-monitor", "policy-monitor", "behavior-monitor"]):
         row = states[states["monitor_id"] == monitor_id]
         if row.empty:
             trust = float(service.trust_config["initial_trust"])
@@ -653,7 +655,7 @@ if page == "Overview":
                 <div class="monitor-card" style="min-height:155px;">
                   <div class="monitor-title">{MONITOR_LABELS[monitor_id]}</div>
                   <div>{badge(status)}</div>
-                  <div class="kv-row" style="margin-top:.7rem;"><span class="kv-key">Health score</span><span class="kv-value">{trust:.0%}</span></div>
+                  <div class="kv-row" style="margin-top:.7rem;"><span class="kv-key">Trust score</span><span class="kv-value">{trust:.0%}</span></div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -786,13 +788,13 @@ elif page == "Inspect request":
         )
 
         st.markdown("### Security checks")
-        monitor_cols = st.columns(3)
+        monitor_cols = st.columns(4)
         for column, result in zip(monitor_cols, output["monitor_results"]):
             with column:
                 monitor_card(result, output["reliability"][result.monitor_id])
 
         selection = next((item.metadata for item in output["monitor_results"]
-                          if item.monitor_id == "semantic-monitor"), {})
+                          if item.monitor_id == "data-minimization-monitor"), {})
         if selection.get("resource"):
             st.caption("Selected data fields: " + ", ".join(selection.get("selected_fields", [])))
             st.caption("Removed fields: " + ", ".join(selection.get("removed_fields", [])))
@@ -820,8 +822,8 @@ elif page == "Monitor health":
     )
 
     states = service.db.get_trust_states()
-    cols = st.columns(3)
-    for column, monitor_id in zip(cols, ["semantic-monitor", "policy-monitor", "behavior-monitor"]):
+    cols = st.columns(4)
+    for column, monitor_id in zip(cols, ["semantic-monitor", "data-minimization-monitor", "policy-monitor", "behavior-monitor"]):
         row = states[states["monitor_id"] == monitor_id]
         if row.empty:
             trust = float(service.trust_config["initial_trust"])
@@ -836,7 +838,7 @@ elif page == "Monitor health":
                 <div class="monitor-card" style="min-height:165px;">
                   <div class="monitor-title">{MONITOR_LABELS[monitor_id]}</div>
                   <div>{badge(status)}</div>
-                  <div class="kv-row" style="margin-top:.7rem;"><span class="kv-key">Health score</span><span class="kv-value">{trust:.0%}</span></div>
+                  <div class="kv-row" style="margin-top:.7rem;"><span class="kv-key">Trust score</span><span class="kv-value">{trust:.0%}</span></div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -844,7 +846,7 @@ elif page == "Monitor health":
 
     st.markdown("### Health history")
     history_frames = []
-    for monitor_id in ["semantic-monitor", "policy-monitor", "behavior-monitor"]:
+    for monitor_id in ["semantic-monitor", "data-minimization-monitor", "policy-monitor", "behavior-monitor"]:
         history = service.db.monitor_history(monitor_id)
         if not history.empty:
             history = history[["event_created_at", "trust_score"]].copy()

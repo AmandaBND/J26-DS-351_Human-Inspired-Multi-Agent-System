@@ -1,0 +1,18 @@
+{
+  "event_count": 27,
+  "actual_monitor_observations": 108,
+  "controlled_fault_records": 324,
+  "semantic_benchmark_cases": 15,
+  "semantic_benchmark_exact_decision_matches": 5,
+  "independently_reviewed_field_labels": 0,
+  "field_selection_accuracy": null,
+  "successful_sqlite_projection_checks": 9,
+  "sqlite_records_are_demonstration_data": true,
+  "enterprise_behavior_log_cases": 0,
+  "faults_are_simulated": true,
+  "models_ran": [
+    "Prompt Guard 2 86M",
+    "Qwen2.5 via Ollama"
+  ],
+  "notes": "Benchmark decisions are proxies for injection presence; field-necessity labels remain unverified."
+}

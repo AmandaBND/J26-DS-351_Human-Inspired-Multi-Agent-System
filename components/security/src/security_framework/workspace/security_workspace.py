@@ -5,6 +5,7 @@ import math
 import sqlite3
 import uuid
 from collections import Counter, defaultdict
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean, stdev
@@ -30,12 +31,14 @@ from security_framework.monitors import (
     MonitorResult,
     PolicyToolMonitor,
     DataMinimizationMonitor,
+    SemanticPromptMonitor,
 )
 from security_framework.trust import AdaptiveTrustEstimator
 
 
 MONITOR_IDS = [
     "semantic-monitor",
+    "data-minimization-monitor",
     "policy-monitor",
     "behavior-monitor",
 ]
@@ -64,11 +67,16 @@ class SecurityWorkspaceDatabase:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.initialize()
 
-    def _connect(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connect(self):
         connection = sqlite3.connect(self.db_path)
-        connection.row_factory = sqlite3.Row
-        connection.execute("PRAGMA foreign_keys = ON")
-        return connection
+        try:
+            connection.row_factory = sqlite3.Row
+            connection.execute("PRAGMA foreign_keys = ON")
+            with connection:
+                yield connection
+        finally:
+            connection.close()
 
     @staticmethod
     def _now() -> str:
@@ -639,6 +647,25 @@ class SecurityWorkspaceDatabase:
             return pd.read_sql_query(f'SELECT {projection} FROM "{table_name}" LIMIT ?',
                                      connection, params=(int(limit),))
 
+    def migrate_monitor_history(self, initial_trust: float, initial_status: str) -> int:
+        with self._connect() as connection:
+            existing = connection.execute(
+                "SELECT COUNT(*) FROM monitor_results "
+                "WHERE monitor_id = 'semantic-monitor' AND monitor_type = 'DATA_MINIMIZATION'"
+            ).fetchone()[0]
+            if existing:
+                connection.execute(
+                    "UPDATE monitor_results SET monitor_id = 'data-minimization-monitor' "
+                    "WHERE monitor_id = 'semantic-monitor' AND monitor_type = 'DATA_MINIMIZATION'"
+                )
+                connection.execute(
+                    "UPDATE trust_state SET trust_score = ?, trust_status = ?, "
+                    "p_compromised = NULL, updated_at = ? "
+                    "WHERE monitor_id = 'semantic-monitor'",
+                    (float(initial_trust), initial_status, self._now()),
+                )
+        return int(existing)
+
     def reset_security_activity(
         self,
         *,
@@ -683,7 +710,16 @@ class SecurityWorkspaceService:
             self.project_root / "config" / "policies.json"
         )
 
-        self.semantic_monitor = DataMinimizationMonitor(
+        semantic_settings = self._read_json(
+            self.project_root / "config" / "monitor_settings.json"
+        )["semantic_prompt_monitor"]
+        self.semantic_monitor = SemanticPromptMonitor(
+            model_id=semantic_settings["model_id"],
+            review_threshold=float(semantic_settings["review_threshold"]),
+            block_threshold=float(semantic_settings["block_threshold"]),
+        )
+
+        self.data_minimization_monitor = DataMinimizationMonitor(
             self.project_root / "config" / "data_minimization.json",
             self.project_root / "config" / "policies.json",
         )
@@ -702,6 +738,7 @@ class SecurityWorkspaceService:
 
         self.monitors = {
             "semantic-monitor": self.semantic_monitor,
+            "data-minimization-monitor": self.data_minimization_monitor,
             "policy-monitor": self.policy_monitor,
             "behavior-monitor": self.behavior_monitor,
         }
@@ -721,6 +758,7 @@ class SecurityWorkspaceService:
 
         initial_trust = float(self.trust_config["initial_trust"])
         initial_status = self._status_from_score(initial_trust)
+        self.db.migrate_monitor_history(initial_trust, initial_status)
         self.db.ensure_initial_trust(
             monitor_ids=MONITOR_IDS,
             trust_score=initial_trust,
@@ -773,7 +811,7 @@ class SecurityWorkspaceService:
             return None, None
 
         summary = self._read_json(summary_file)
-        if summary.get("monitor_set_version") != "minimization-v1":
+        if summary.get("monitor_set_version") != "four-monitors-v1":
             return None, None
         model_name = summary.get("best_model_by_f1_then_auprc")
 
@@ -1183,6 +1221,18 @@ class SecurityWorkspaceService:
         )
 
         for result in monitor_results:
+            if result.monitor_id == "semantic-monitor":
+                if result.decision == SecurityDecision.BLOCK:
+                    return SecurityDecision.BLOCK, "PROMPT_SECURITY_BLOCK"
+                if result.decision == SecurityDecision.REVIEW:
+                    return SecurityDecision.REVIEW, "PROMPT_SECURITY_REVIEW"
+            if result.monitor_id == "data-minimization-monitor":
+                if result.decision == SecurityDecision.BLOCK:
+                    return SecurityDecision.BLOCK, "DATA_ACCESS_BLOCK"
+                if result.decision == SecurityDecision.REVIEW:
+                    return SecurityDecision.REVIEW, "DATA_ACCESS_REVIEW"
+
+        for result in monitor_results:
             trust_score = float(
                 reliability[result.monitor_id]["trust_score"]
             )
@@ -1216,7 +1266,7 @@ class SecurityWorkspaceService:
 
         return research_decision, "ADAPTIVE_TRUST_WEIGHTED_FUSION"
 
-    def _perform_guarded_action(self, *, event, final_decision):
+    def _perform_guarded_action(self, *, event, final_decision, monitor_results):
         if final_decision == SecurityDecision.BLOCK:
             return "DENIED", None
         if final_decision == SecurityDecision.REVIEW:
@@ -1226,7 +1276,16 @@ class SecurityWorkspaceService:
         policy = self.policy_monitor.evaluate(event)
         if policy.decision != SecurityDecision.ALLOW:
             return "DENIED", None
-        minimization = self.semantic_monitor.evaluate(event)
+        minimization = next(
+            item for item in monitor_results
+            if item.monitor_id == "data-minimization-monitor"
+        )
+        semantic = next(
+            item for item in monitor_results
+            if item.monitor_id == "semantic-monitor"
+        )
+        if semantic.decision != SecurityDecision.ALLOW:
+            return "HELD_FOR_REVIEW" if semantic.decision == SecurityDecision.REVIEW else "DENIED", None
         if minimization.decision != SecurityDecision.ALLOW:
             return "HELD_FOR_REVIEW" if minimization.decision == SecurityDecision.REVIEW else "DENIED", None
         if event.event_type == EventType.TOOL_REQUEST:
@@ -1240,7 +1299,7 @@ class SecurityWorkspaceService:
         frame = self.db.fetch_selected_resource(resource, columns)
         for field, action in minimization.metadata["field_actions"].items():
             if action == "PSEUDONYMIZE" and field in frame:
-                frame[field] = frame[field].map(self.semantic_monitor.pseudonymize)
+                frame[field] = frame[field].map(self.data_minimization_monitor.pseudonymize)
         return "EXECUTED", frame
 
     def run_tool(self, tool_name: str):
@@ -1316,6 +1375,7 @@ class SecurityWorkspaceService:
         database_action, action_result = self._perform_guarded_action(
             event=event,
             final_decision=final_decision,
+            monitor_results=monitor_results,
         )
 
         self.db.update_event_outcome(

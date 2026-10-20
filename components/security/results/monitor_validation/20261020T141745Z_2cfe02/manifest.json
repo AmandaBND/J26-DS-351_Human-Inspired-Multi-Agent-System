@@ -1,0 +1,28 @@
+{
+  "generated_utc": "2026-10-20T14:17:45.316039+00:00",
+  "source_sha256": {
+    "data\\public\\injecagent\\test_cases_ds_base.jsonl": "abbc635548842d1e69538cdeb5b1c54acc6610a65099abdf3391a169efe275a8",
+    "data\\public\\injecagent\\benign_user_cases.jsonl": "7150d842fdfb52b5f77f5fc56771da98bc613e44383ff4062972a575dbfcb09f",
+    "data\\evaluation\\field_necessity_tasks.csv": "5c36c9b180b12dcdd322a95f6f1e15f819b1118926406b5c4711787810e4c199",
+    "config\\data_minimization.json": "cf1cf40bd7e6c51d744939f2a424c489e2aa519ae97317a226d5085ad78c473c",
+    "config\\monitor_settings.json": "18b69126b46115f0ec30ba5af4a93ebd8dd0c0d7df309ed4dba9d72ec57d8b25",
+    "config\\policies.json": "85e5b765a4c86594b0d444604fdc4dea3360ed002067a40a27a4d5162f5618c9"
+  },
+  "execution_script_sha256": "84816e92a1ab6e9419cf0bb0717e8ce86ada58d38864457c2659360749df038f",
+  "monitor_source_sha256": {
+    "src\\security_framework\\monitors\\behavior_monitor.py": "f23295767f6b79db3484fa7bac27247d5d8bd2320c8ee1ea0f50c0456b01323e",
+    "src\\security_framework\\monitors\\data_minimization_monitor.py": "632bb9240aee03f60c96fdbcaa962c325580d48ce0a7907759b9bc518d46d91d",
+    "src\\security_framework\\monitors\\policy_monitor.py": "1322312217ff11d444cda80953ea075dcd701f8fddae7243b060f4505a1cdf61",
+    "src\\security_framework\\monitors\\semantic_monitor.py": "0d33d9b4ae702d9286979ba1cfd12bfbd5faab04284d063b6dde409e75dad64a"
+  },
+  "source_kind": {
+    "InjecAgent": "public_research_benchmark",
+    "authored_enterprise_task": "author_defined_no_expert_review"
+  },
+  "runtime": {
+    "ollama_model": "qwen2.5:1.5b",
+    "semantic_model": "meta-llama/Llama-Prompt-Guard-2-86M"
+  },
+  "labels": "Only the semantic benchmark includes a reference attack/benign label; these do not independently certify monitor decisions.",
+  "reproducibility_note": "Record exact installed Hugging Face model revision and Ollama model digest before publication."
+}

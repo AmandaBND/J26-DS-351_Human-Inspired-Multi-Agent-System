@@ -4,8 +4,9 @@
   "single_guard_id": "policy-monitor",
   "static_weights": {
     "semantic-monitor": 1.0,
+    "data-minimization-monitor": 1.0,
     "policy-monitor": 1.0,
     "behavior-monitor": 1.0
   },
-  "note": "PP1 engineering thresholds/weights; tune on validation data for final experiments."
+  "note": "Static baseline weights. Validate decision thresholds on held-out evidence."
 }
