@@ -1,4 +1,3 @@
-"""Performance Analysis sub-agent: role-specific KPIs -> indices, category scores, declining KPIs."""
 from __future__ import annotations
 
 from src.config import BASELINE_YEAR
