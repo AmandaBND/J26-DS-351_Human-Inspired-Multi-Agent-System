@@ -8,7 +8,7 @@ from src.services import trajectory
 from src.services.data_generator import generate_and_seed
 from src.services.data_access import load_bundle
 from src.services.diagnosis import sat
-from src.services.evaluation import evaluate
+from src.services.evaluation import evaluate, prf
 from src.services.kpi_engine import INDEX_CENTER, label_for
 from src.services.review import decide
 from src.workflow.graph import run_assessment
@@ -89,6 +89,20 @@ def test_evaluation_meets_targets(bundle):
     res = evaluate(bundle)
     assert res["agent"]["f1"] >= 0.80 and res["root_cause_accuracy"] >= 0.80
     assert res["max_latency_s"] <= 5
+
+
+def test_prf_reports_accuracy_and_confusion_counts():
+    result = prf([True, False, True, False], [True, True, False, False])
+    assert result == {
+        "accuracy": 0.5,
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5,
+        "tp": 1,
+        "fp": 1,
+        "fn": 1,
+        "tn": 1,
+    }
 
 
 def test_decide_rejects_invalid_decision():

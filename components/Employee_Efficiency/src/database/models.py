@@ -1,8 +1,3 @@
-"""SQLite schema (SQLAlchemy 2.0). Run `uv run python -m src.database.models` to create the DB.
-
-Privacy: employees are identified only by pseudonymous codes (EMP-001...). No names, NICs or
-contact details are stored anywhere in this component.
-"""
 from __future__ import annotations
 
 from datetime import UTC, datetime
