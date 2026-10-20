@@ -65,6 +65,7 @@ def _recommendation_lines(r: AssessmentReport) -> list[str]:
     lines: list[str] = []
     for recommendation in r.recommendations:
         lines.append(f"**{recommendation.headline}:**")
+        lines.append("")
         lines.extend(f"- {action}" for action in recommendation.actions)
         watch = [
             KPI_REGISTRY[code].name
@@ -284,7 +285,7 @@ def template_narrative(r: AssessmentReport) -> str:
         f"**Why it probably happened:**\n{why}",
         f"**Is this the employee's responsibility?:**\n{responsibility}",
         f"**What the data does and does not show:**\n{checkpoints} {limits}",
-        "**What we recommend:**\n" + "\n".join(f"- {item}" for item in recommendations),
+        "**What we recommend:**\n" + "\n".join(recommendations),
         "This is a recommendation only. A manager must review and approve it before any action is taken.",
     ])
 
