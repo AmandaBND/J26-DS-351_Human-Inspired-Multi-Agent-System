@@ -1,16 +1,3 @@
-"""Generates a Metropolitan-style RAW export (CSV files) for the preprocessing pipeline.
-
-SYNTHETIC. Calibrated to the prototype assumptions in docs (headcount 34, ~1,000 jobs/month,
-seasonality, SLA rules, KPI targets). It deliberately contains realistic data-quality problems
-(duplicates, mixed date formats, label variants, missing values, outliers, test rows) so the
-preprocessing step has real work to do.
-
-Outputs
-  data/raw/              what Metropolitan would hand over (employee numbers like 001363)
-  data/synthetic_truth/  NOT part of the export: ground-truth labels + list of injected issues + QA
-
-Run:  uv run python -m src.services.raw_data_generator
-"""
 from __future__ import annotations
 
 import json

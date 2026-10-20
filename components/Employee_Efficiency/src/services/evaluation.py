@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.config import DATA_DIR, PRIVATE_DIR
+from src.config import DATA_DIR, PRIVATE_DIR, TRUTH_DIR
 from src.database.models import Employee, HROutcome, SessionLocal
 from src.services.baselines import threshold_flag
 from src.services.data_access import DataBundle
@@ -16,6 +16,7 @@ GROUND_TRUTH_COLUMNS = [
     "employee_code", "role", "scenario", "cycle_year", "has_deviation", "root_cause",
 ]
 VERIFIED_OUTCOMES_PATH = DATA_DIR / "verified_outcomes.csv"
+SYNTHETIC_OUTCOMES_PATH = TRUTH_DIR / "ground_truth_labels.csv"
 
 
 def prf(pred: list[bool], truth: list[bool]) -> dict[str, float | int]:
@@ -23,21 +24,24 @@ def prf(pred: list[bool], truth: list[bool]) -> dict[str, float | int]:
     tp = sum(p and t for p, t in zip(pred, truth))
     fp = sum(p and not t for p, t in zip(pred, truth))
     fn = sum((not p) and t for p, t in zip(pred, truth))
+    tn = sum(not p and not t for p, t in zip(pred, truth))
     precision = tp / (tp + fp) if tp + fp else 0.0
     recall = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     return {
+        "accuracy": round((tp + tn) / len(truth), 3) if truth else 0.0,
         "precision": round(precision, 3),
         "recall": round(recall, 3),
         "f1": round(f1, 3),
         "tp": tp,
         "fp": fp,
         "fn": fn,
+        "tn": tn,
     }
 
 
 def load_ground_truth(path: Path = VERIFIED_OUTCOMES_PATH) -> pd.DataFrame:
-    """Load company-verified outcomes and replace employee numbers with pseudonyms."""
+    """Load outcome labels and replace employee numbers with pseudonyms."""
     if not path.is_file():
         return pd.DataFrame(columns=GROUND_TRUTH_COLUMNS)
     mapping_path = PRIVATE_DIR / "pseudonym_map.csv"
@@ -98,12 +102,16 @@ def _summary_row(report, baseline: bool, latency: float) -> dict[str, object]:
     }
 
 
-def evaluate(bundle: DataBundle) -> dict[str, object]:
-    """Compare agent and baseline results with verified labels when present."""
+def evaluate(bundle: DataBundle, use_synthetic_truth: bool = False) -> dict[str, object]:
+    """Compare agent and baseline results with selected outcome labels when present."""
     year = int(bundle.as_of[:4])
-    labels = load_ground_truth()
-    label_source = "verified_outcomes.csv" if not labels.empty else ""
-    if labels.empty:
+    if use_synthetic_truth:
+        labels = load_ground_truth(SYNTHETIC_OUTCOMES_PATH)
+        label_source = "Synthetic scenario labels (development benchmark)"
+    else:
+        labels = load_ground_truth()
+        label_source = "verified_outcomes.csv" if not labels.empty else ""
+    if labels.empty and not use_synthetic_truth:
         labels = _legacy_outcomes(year)
         label_source = "stored review outcomes" if not labels.empty else ""
 
@@ -129,7 +137,8 @@ def evaluate(bundle: DataBundle) -> dict[str, object]:
     ) if not labels.empty else pd.DataFrame()
 
     if comparable.empty:
-        no_labels = "No verified outcome labels are available for this reporting cycle."
+        label_kind = "synthetic" if use_synthetic_truth else "verified"
+        no_labels = f"No {label_kind} outcome labels are available for this reporting cycle."
         return {
             "as_of": bundle.as_of,
             "n": len(detail),
@@ -157,12 +166,9 @@ def evaluate(bundle: DataBundle) -> dict[str, object]:
     truth = eligible["has_deviation"].astype(bool).tolist()
     baseline_prediction = eligible["baseline_flag"].astype(bool).tolist()
     truth_causes = comparable[comparable["has_deviation"]]
-    cause_rows = truth_causes[
-        truth_causes["agent_cause"].ne("none")
-    ]
     cause_accuracy = (
-        float((cause_rows["agent_cause"] == cause_rows["root_cause"]).mean())
-        if not cause_rows.empty else float("nan")
+        float((truth_causes["agent_cause"] == truth_causes["root_cause"]).mean())
+        if not truth_causes.empty else float("nan")
     )
     context_rows = truth_causes[truth_causes["root_cause"].isin(["process", "external"])]
     context_ok = (
@@ -194,6 +200,7 @@ def evaluate(bundle: DataBundle) -> dict[str, object]:
     return {
         "as_of": bundle.as_of,
         "n": len(comparable),
+        "n_evaluable": len(eligible),
         "labels_available": True,
         "label_source": label_source,
         "label_message": "",

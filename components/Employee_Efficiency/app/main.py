@@ -1045,6 +1045,7 @@ pages = [
     "Employee analysis",
     "Review queue",
     "Intervention tracking",
+    "Evaluation",
 ]
 
 phase_labels = {
@@ -2067,13 +2068,23 @@ elif page == "Evaluation":
     render_page_header(
         "SYSTEM DIAGNOSTIC VALIDATION",
         "Evaluation and performance checks",
-        "Compare assessments with verified outcome labels when they are available, and inspect processing latency and agreement with the rule-based comparison.",
+        "Compare assessments with generated development labels or verified outcome labels, and inspect processing latency and agreement with the rule-based comparison.",
     )
 
+    label_mode = st.radio(
+        "Outcome labels",
+        ("Synthetic scenario labels (development benchmark)", "Verified outcomes"),
+        horizontal=True,
+    )
+    use_synthetic_truth = label_mode.startswith("Synthetic")
+    evaluation_key = f"evaluation_{as_of}_{'synthetic' if use_synthetic_truth else 'verified'}"
     if st.button("Run evaluation", type="primary"):
         with st.spinner("Running assessments for the selected reporting month..."):
-            st.session_state[f"evaluation_{as_of}"] = evaluate(bundle)
-    result = st.session_state.get(f"evaluation_{as_of}")
+            st.session_state[evaluation_key] = evaluate(
+                bundle,
+                use_synthetic_truth=use_synthetic_truth,
+            )
+    result = st.session_state.get(evaluation_key)
     if result is None:
         st.info("Run the evaluation to calculate employee-level results and latency.")
     else:
@@ -2081,8 +2092,8 @@ elif page == "Evaluation":
                   f"Max: {result['max_latency_s']:.3f} s")
         if not result["labels_available"]:
             st.warning(
-                "Verified outcome labels are not available for this reporting cycle. "
-                "Accuracy and cause-confusion metrics are therefore not calculated."
+                f"{result['label_message']} "
+                "F1, precision, recall, and cause-accuracy metrics are therefore not calculated."
             )
             if result["agent_baseline_agreement"] is not None:
                 st.metric("Agent / rule-based agreement",
@@ -2092,15 +2103,17 @@ elif page == "Evaluation":
             st.caption(f"Outcome label source: {result['label_source']}")
             agent_result = result["agent"]
             baseline_result = result["rule_based_baseline"]
-            metrics = st.columns(5)
-            metrics[0].metric("Agent F1", f"{agent_result['f1']:.3f}",
+            metrics = st.columns(6)
+            metrics[0].metric("Agent accuracy", f"{agent_result['accuracy']:.1%}")
+            metrics[1].metric("Agent F1", f"{agent_result['f1']:.3f}",
                               f"Precision: {agent_result['precision']:.3f}")
-            metrics[1].metric("Rule-based F1", f"{baseline_result['f1']:.3f}",
+            metrics[2].metric("Rule-based F1", f"{baseline_result['f1']:.3f}",
                               f"Recall: {baseline_result['recall']:.3f}")
-            metrics[2].metric("Cause accuracy", f"{result['root_cause_accuracy']:.1%}")
-            metrics[3].metric("Context fairness",
+            metrics[3].metric("Cause accuracy", f"{result['root_cause_accuracy']:.1%}")
+            metrics[4].metric("Context fairness",
                               f"{result['context_driven_correctly_not_blamed']:.1%}")
-            metrics[4].metric("Employees evaluated", result["n"])
+            metrics[5].metric("Employees evaluated", result["n_evaluable"],
+                              f"of {result['n']} with labels")
             st.markdown("### Cause comparison")
             st.dataframe(result["confusion_matrix"], width="stretch")
             if not result["per_scenario"].empty:

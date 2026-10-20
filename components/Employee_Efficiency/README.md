@@ -104,6 +104,7 @@ Narration receives only aggregated facts and pseudonymous employee codes. Raw fe
 - `data/employee_efficiency_company.db` is the company-data database generated locally and ignored by Git.
 - The previous `data/employee_efficiency.db` is left untouched; set `DATABASE_PATH` in `.env` to use another database.
 - Verified assessment outcomes, when supplied, belong in `data/verified_outcomes.csv`. The evaluation does not treat historical KPI data as ground truth.
+- The Evaluation workspace can also compare against `data/synthetic_truth/ground_truth_labels.csv` as a development benchmark. Results against generated labels are not real-world accuracy.
 - `src/services/data_generator.py` is a legacy 20-employee demo seed; use the preprocessing pipeline for the company export.
 
 ---
