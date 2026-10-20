@@ -1,4 +1,3 @@
-"""Context & Gap Analysis sub-agent: workload, complexity, system/market conditions, feedback, peers."""
 from __future__ import annotations
 
 from src.services.context import analyse_context

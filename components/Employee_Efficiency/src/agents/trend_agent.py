@@ -1,4 +1,3 @@
-"""Trend Analysis sub-agent: historical comparison, checkpoint maths, deviation detection."""
 from __future__ import annotations
 
 from src.services import trajectory

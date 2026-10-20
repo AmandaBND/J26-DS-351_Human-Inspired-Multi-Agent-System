@@ -1,4 +1,3 @@
-"""Improvement Planning sub-agent: diagnosis -> scenario-based recommendations (human review required)."""
 from __future__ import annotations
 
 from src.schemas.assessment import DeviationResult, Diagnosis
