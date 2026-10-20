@@ -1,0 +1,21 @@
+{
+  "flag_format_variants": 34844,
+  "priority_label_variants": 5000,
+  "arrival_dt_missing": 192,
+  "employee_no_missing_leading_zeros": 1720,
+  "status_label_variants": 2027,
+  "product_name_variants": 2250,
+  "employee_no_trailing_space": 1152,
+  "missing_flag_values": 1009,
+  "text_case_whitespace_variants": 1954,
+  "repair_time_outliers_x10": 106,
+  "fault_type_missing": 685,
+  "repair_time_hhmm_format": 301,
+  "assigned_before_request": 102,
+  "arrival_before_assignment": 47,
+  "test_records": 12,
+  "duplicate_job_rows": 166,
+  "price_format_variants": 4467,
+  "proposal_status_variants": 1049,
+  "duplicate_proposal_rows": 36
+}

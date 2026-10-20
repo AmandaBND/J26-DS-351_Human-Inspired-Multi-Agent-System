@@ -1,0 +1,69 @@
+employee_no,role,scenario,cycle_year,has_deviation,root_cause,note
+002150,technician,stable,2025,False,none,
+002150,technician,stable,2026,False,none,
+004936,technician,stable,2025,False,none,
+004936,technician,stable,2026,False,none,
+001829,technician,stable,2025,False,none,
+001829,technician,stable,2026,False,none,
+008544,technician,stable,2025,False,none,
+008544,technician,stable,2026,False,none,
+002807,technician,stable,2025,False,none,
+002807,technician,stable,2026,False,none,
+008026,technician,improving,2025,False,none,Gradual improvement from 2025-03
+008026,technician,improving,2026,False,none,Gradual improvement from 2025-03
+007442,technician,stable,2025,False,none,
+007442,technician,stable,2026,False,none,
+005052,technician,stable,2025,False,none,
+005052,technician,stable,2026,False,none,
+001845,technician,stable,2025,False,none,
+001845,technician,stable,2026,False,none,
+007940,technician,recovered,2025,True,skill,"2025: quality decline after new model rollout, training in Jun 2025, recovered"
+007940,technician,recovered,2026,False,none,"2025: quality decline after new model rollout, training in Jun 2025, recovered"
+008059,technician,scenA,2025,False,none,"Scenario A: complex job mix + spare-part delays (cause = process/supply, not the technician)"
+008059,technician,scenA,2026,True,process,"Scenario A: complex job mix + spare-part delays (cause = process/supply, not the technician)"
+009330,technician,stable,2025,False,none,
+009330,technician,stable,2026,False,none,
+007605,technician,stable,2025,False,none,
+007605,technician,stable,2026,False,none,
+005496,technician,workload,2025,False,none,Overloaded from 2026-04
+005496,technician,workload,2026,True,workload,Overloaded from 2026-04
+005046,technician,skill,2025,False,none,Skill gap on new copier model from 2026-05
+005046,technician,skill,2026,True,skill,Skill gap on new copier model from 2026-05
+005990,technician,stable,2025,False,none,
+005990,technician,stable,2026,False,none,
+001771,technician,stable,2025,False,none,
+001771,technician,stable,2026,False,none,
+005905,technician,stable,2025,False,none,
+005905,technician,stable,2026,False,none,
+006788,technician,skill,2025,False,none,Skill gap on new copier model from 2026-05
+006788,technician,skill,2026,True,skill,Skill gap on new copier model from 2026-05
+009758,technician,stable,2025,False,none,
+009758,technician,stable,2026,False,none,
+008399,technician,scenA,2025,False,none,"Scenario A: complex job mix + spare-part delays (cause = process/supply, not the technician)"
+008399,technician,scenA,2026,True,process,"Scenario A: complex job mix + spare-part delays (cause = process/supply, not the technician)"
+005725,technician,workload,2025,False,none,Overloaded from 2026-04
+005725,technician,workload,2026,True,workload,Overloaded from 2026-04
+003044,technician,stable,2025,False,none,
+003044,technician,stable,2026,False,none,
+004618,technician,stable,2025,False,none,
+004618,technician,stable,2026,False,none,
+006870,tpo_service,tpo_backlog,2025,False,none,"Scenario B: one TPO on leave, remaining TPOs absorb the queue (capacity/workload)"
+006870,tpo_service,tpo_backlog,2026,True,workload,"Scenario B: one TPO on leave, remaining TPOs absorb the queue (capacity/workload)"
+004988,tpo_service,tpo_backlog,2025,False,none,"Scenario B: one TPO on leave, remaining TPOs absorb the queue (capacity/workload)"
+004988,tpo_service,tpo_backlog,2026,True,workload,"Scenario B: one TPO on leave, remaining TPOs absorb the queue (capacity/workload)"
+007834,tpo_service,tpo_backlog,2025,False,none,"Scenario B: one TPO on leave, remaining TPOs absorb the queue (capacity/workload)"
+007834,tpo_service,tpo_backlog,2026,True,workload,"Scenario B: one TPO on leave, remaining TPOs absorb the queue (capacity/workload)"
+004332,tpo_service,tpo_leave,2025,False,none,"On extended leave from 2026-06: no activity after May (data gap, no performance judgement)"
+004332,tpo_service,tpo_leave,2026,False,none,"On extended leave from 2026-06: no activity after May (data gap, no performance judgement)"
+007257,amc_processing,proc_info,2025,False,none,Scenario C: incoming proposals with missing approval/equipment details
+007257,amc_processing,proc_info,2026,True,process,Scenario C: incoming proposals with missing approval/equipment details
+004884,amc_processing,proc_info,2025,False,none,Scenario C: incoming proposals with missing approval/equipment details
+004884,amc_processing,proc_info,2026,True,process,Scenario C: incoming proposals with missing approval/equipment details
+005609,amc_processing,stable,2025,False,none,
+005609,amc_processing,stable,2026,False,none,
+002640,contracts_coordinator,price_pressure,2025,False,none,Scenario D: AMC price rise + competitor offers; follow-up compliance stays high
+002640,contracts_coordinator,price_pressure,2026,True,external,Scenario D: AMC price rise + competitor offers; follow-up compliance stays high
+008702,contracts_coordinator,price_pressure,2025,False,none,Scenario D: AMC price rise + competitor offers; follow-up compliance stays high
+008702,contracts_coordinator,price_pressure,2026,True,external,Scenario D: AMC price rise + competitor offers; follow-up compliance stays high
+001800,contracts_coordinator,price_pressure,2025,False,none,Scenario D: AMC price rise + competitor offers; follow-up compliance stays high
+001800,contracts_coordinator,price_pressure,2026,True,external,Scenario D: AMC price rise + competitor offers; follow-up compliance stays high

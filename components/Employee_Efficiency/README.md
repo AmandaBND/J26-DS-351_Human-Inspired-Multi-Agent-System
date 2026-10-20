@@ -77,38 +77,42 @@ app/main.py              Streamlit dashboard
 tests/                   pytest suite
 ```
 
----
 
-## Data
 
-No real Metropolitan data is used. `src/services/data_generator.py` creates pseudonymised synthetic
-employees with known scenarios and ground-truth labels. Evaluation results therefore validate the
-pipeline, not real-world accuracy.
 
----
 
 ## Run
 
 ```powershell
 cd components\Employee_Efficiency
-uv python install 3.11
 uv sync
-copy .env.example .env
 uv run python -m src.database.models
-uv run python -m src.services.data_generator
+uv run python -m src.services.preprocessing.pipeline
 uv run python test_database.py
 uv run pytest -v
 uv run streamlit run app/main.py
 ```
 
 Optional LLM narration: set `OPENROUTER_API_KEY` in `.env`, then run `uv run python test_connection.py`.
+Narration receives only aggregated facts and pseudonymous employee codes. Raw feedback and row-level data remain local.
+
+## Data handling
+
+- `data/raw/` contains the company operational exports used by this component.
+- The pipeline maps employee numbers to `EMP-001` through `EMP-034` before writing database records.
+- The private mapping is stored in `data/private/pseudonym_map.csv`; never commit or share that directory.
+- `data/employee_efficiency_company.db` is the company-data database generated locally and ignored by Git.
+- The previous `data/employee_efficiency.db` is left untouched; set `DATABASE_PATH` in `.env` to use another database.
+- Verified assessment outcomes, when supplied, belong in `data/verified_outcomes.csv`. The evaluation does not treat historical KPI data as ground truth.
+- `src/services/data_generator.py` is a legacy 20-employee demo seed; use the preprocessing pipeline for the company export.
 
 ---
 
 ## Status
 
-Implemented: KPI engine, trajectory/checkpoints, deviation detection, context analysis, diagnosis,
-recommendations, human review, intervention tracking, evaluation, dashboard.
+Implemented: company-export cleaning and pseudonymization, monthly KPI/context aggregation,
+trajectory/checkpoints, missing-data handling, explainable diagnosis, manager review, intervention
+tracking, evaluation where verified outcomes are available, and the six-workspace dashboard.
 
-Planned: wellbeing signals, Security Layer integration, shared dashboard integration, evaluation
-with real or expert-labelled data.
+Planned: wellbeing signals, Security Layer integration, shared dashboard integration, and validated
+period-specific outcome labels for evaluation.
