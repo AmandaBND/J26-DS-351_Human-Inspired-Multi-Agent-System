@@ -1,6 +1,6 @@
 {
-  "selector": "rules",
-  "ollama_model": "qwen2.5:3b",
+  "selector": "ollama",
+  "ollama_model": "qwen2.5:1.5b",
   "columns": {
     "customer_history": {
       "id": [
