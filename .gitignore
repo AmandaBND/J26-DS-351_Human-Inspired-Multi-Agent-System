@@ -42,3 +42,24 @@ components/security/data/raw_company_data/
 
 secrets/
 credentials/
+# Local research/runtime material
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.bak
+*.backup*
+recordings/
+audio_uploads/
+ser_dataset/
+ser_training/
+*.wav
+*.mp3
+*.mp4
+*.m4a
+*.flac
+*.ogg
+sinhala_transcript*.txt
+.env.*
+!.env.example
