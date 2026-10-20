@@ -1,0 +1,24 @@
+[project]
+name = "employee-efficiency"
+version = "0.1.0"
+description = "Employee Efficiency and Monitoring Agent for Metropolitan Technologies (SLIIT J26-DS-351)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph",
+    "langchain",
+    "langchain-openai",
+    "python-dotenv",
+    "pydantic",
+    "streamlit",
+    "sqlalchemy",
+    "pandas",
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+    "slow: end-to-end checks that run the complete preprocessing pipeline",
+]

@@ -1,0 +1,12 @@
+kpi,baseline_min,baseline_mean,baseline_max,prototype_range,mean_in_range
+SLA compliance %,88.22,89.88,91.4,85-95,True
+First-time fix rate %,79.66,82.29,84.57,72-88,True
+Repeat service rate %,7.89,10.93,12.58,6-15,True
+"MTTR hours (breakdown, active repair)",3.45,3.57,3.75,2-6,True
+"Response time hours (working, mean)",4.38,4.61,4.84,3-10,True
+Assignment time median minutes,23.57,24.66,26.66,15-60,True
+Service report completion %,93.42,94.87,96.89,90-99,True
+AMC conversion % (45-day cohort),21.25,28.37,34.02,20-40,True
+Follow-up compliance % (all follow-ups on time),81.6,86.2,89.05,80-99,True
+Contract processing median working days,1.24,1.43,1.55,1-4,True
+Contract accuracy %,97.92,99.71,100.0,97-100,True

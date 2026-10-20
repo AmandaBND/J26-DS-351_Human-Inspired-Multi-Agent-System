@@ -1,0 +1,137 @@
+employee_no,review_cycle,rating,manager_comment,action_taken
+002150,2024 Year-End,3,Meets expectations.,None
+002150,2025 Mid-Year,3,Meets expectations.,None
+002150,2025 Year-End,3,Steady month-to-month results.,None
+002150,2026 Mid-Year,4,"Good team player, reliable.",None
+004936,2024 Year-End,4,"Good team player, reliable.",None
+004936,2025 Mid-Year,4,Consistent performer.,None
+004936,2025 Year-End,5,Consistent performer.,None
+004936,2026 Mid-Year,3,Consistent performer.,None
+001829,2024 Year-End,4,Steady month-to-month results.,None
+001829,2025 Mid-Year,3,Consistent performer.,None
+001829,2025 Year-End,4,Meets expectations.,None
+001829,2026 Mid-Year,4,Consistent performer.,None
+008544,2024 Year-End,4,Steady month-to-month results.,None
+008544,2025 Mid-Year,4,Meets expectations.,None
+008544,2025 Year-End,5,Consistent performer.,None
+008544,2026 Mid-Year,4,"Good team player, reliable.",None
+002807,2024 Year-End,3,Meets expectations.,None
+002807,2025 Mid-Year,3,Steady month-to-month results.,None
+002807,2025 Year-End,3,Meets expectations.,None
+002807,2026 Mid-Year,4,Meets expectations.,None
+008026,2024 Year-End,3,Steady month-to-month results.,None
+008026,2025 Mid-Year,2,Consistent performer.,None
+008026,2025 Year-End,4,"Good team player, reliable.",None
+008026,2026 Mid-Year,4,Steady month-to-month results.,None
+007442,2024 Year-End,4,Steady month-to-month results.,None
+007442,2025 Mid-Year,4,Meets expectations.,None
+007442,2025 Year-End,4,Meets expectations.,None
+007442,2026 Mid-Year,4,Consistent performer.,None
+005052,2024 Year-End,3,Consistent performer.,None
+005052,2025 Mid-Year,4,"Good team player, reliable.",None
+005052,2025 Year-End,4,Consistent performer.,None
+005052,2026 Mid-Year,3,Steady month-to-month results.,None
+001845,2024 Year-End,5,Meets expectations.,None
+001845,2025 Mid-Year,4,Consistent performer.,None
+001845,2025 Year-End,3,"Good team player, reliable.",None
+001845,2026 Mid-Year,4,Steady month-to-month results.,None
+007940,2024 Year-End,3,Repeat visits rose after new model rollout,None
+007940,2025 Mid-Year,3,Repeat visits rose after new model rollout. Needs support.,Training scheduled
+007940,2025 Year-End,4,Improved after technical training,None
+007940,2026 Mid-Year,2,"Good team player, reliable.",None
+008059,2024 Year-End,4,Meets expectations.,None
+008059,2025 Mid-Year,3,"Good team player, reliable.",None
+008059,2025 Year-End,3,Meets expectations.,None
+008059,2026 Mid-Year,3,First-time fix rate dropped; complex jobs and parts delays. Needs support.,Review parts availability
+009330,2024 Year-End,4,Steady month-to-month results.,None
+009330,2025 Mid-Year,4,Consistent performer.,None
+009330,2025 Year-End,3,Meets expectations.,None
+009330,2026 Mid-Year,4,Meets expectations.,None
+007605,2024 Year-End,4,Meets expectations.,None
+007605,2025 Mid-Year,3,"Good team player, reliable.",None
+007605,2025 Year-End,3,Steady month-to-month results.,None
+007605,2026 Mid-Year,4,Consistent performer.,None
+005496,2024 Year-End,4,Meets expectations.,None
+005496,2025 Mid-Year,4,"Good team player, reliable.",None
+005496,2025 Year-End,4,Consistent performer.,None
+005496,2026 Mid-Year,1,Higher job volume and overtime noted. Needs support.,Workload to be reviewed
+005046,2024 Year-End,4,Repeat visits increased on the new copier model,None
+005046,2025 Mid-Year,4,Consistent performer.,None
+005046,2025 Year-End,5,"Good team player, reliable.",None
+005046,2026 Mid-Year,2,Repeat visits increased on the new copier model. Needs support.,Training scheduled
+005990,2024 Year-End,4,"Good team player, reliable.",None
+005990,2025 Mid-Year,4,Meets expectations.,None
+005990,2025 Year-End,4,Steady month-to-month results.,None
+005990,2026 Mid-Year,3,Consistent performer.,None
+001771,2024 Year-End,4,Consistent performer.,None
+001771,2025 Mid-Year,3,"Good team player, reliable.",None
+001771,2025 Year-End,3,Consistent performer.,None
+001771,2026 Mid-Year,3,Steady month-to-month results.,None
+005905,2024 Year-End,4,Steady month-to-month results.,None
+005905,2025 Mid-Year,3,"Good team player, reliable.",None
+005905,2025 Year-End,4,Steady month-to-month results.,None
+005905,2026 Mid-Year,4,Meets expectations.,None
+006788,2024 Year-End,4,Consistent performer.,None
+006788,2025 Mid-Year,4,Meets expectations.,None
+006788,2025 Year-End,4,Consistent performer.,None
+006788,2026 Mid-Year,2,Repeat visits increased on the new copier model. Needs support.,Training scheduled
+009758,2024 Year-End,3,"Good team player, reliable.",None
+009758,2025 Mid-Year,3,"Good team player, reliable.",None
+009758,2025 Year-End,3,Consistent performer.,None
+009758,2026 Mid-Year,4,Meets expectations.,None
+008399,2024 Year-End,4,"Good team player, reliable.",None
+008399,2025 Mid-Year,4,Consistent performer.,None
+008399,2025 Year-End,4,Meets expectations.,None
+008399,2026 Mid-Year,2,First-time fix rate dropped; complex jobs and parts delays. Needs support.,Review parts availability
+005725,2024 Year-End,3,"Good team player, reliable.",None
+005725,2025 Mid-Year,4,Meets expectations.,None
+005725,2025 Year-End,3,Consistent performer.,None
+005725,2026 Mid-Year,2,Higher job volume and overtime noted. Needs support.,Workload to be reviewed
+003044,2024 Year-End,3,Consistent performer.,None
+003044,2025 Mid-Year,4,Consistent performer.,None
+003044,2025 Year-End,4,"Good team player, reliable.",None
+003044,2026 Mid-Year,4,"Good team player, reliable.",None
+004618,2024 Year-End,4,"Good team player, reliable.",None
+004618,2025 Mid-Year,3,Steady month-to-month results.,None
+004618,2025 Year-End,4,Consistent performer.,None
+004618,2026 Mid-Year,4,"Good team player, reliable.",None
+006870,2024 Year-End,3,"Good team player, reliable.",None
+006870,2025 Mid-Year,3,Assignment times above target,None
+006870,2025 Year-End,3,Assignment times above target,None
+006870,2026 Mid-Year,3,Assignment times above target. Needs support.,Monitor
+004988,2024 Year-End,4,"Good team player, reliable.",None
+004988,2025 Mid-Year,4,Assignment times above target,None
+004988,2025 Year-End,4,Consistent performer.,None
+004988,2026 Mid-Year,3,Assignment times above target. Needs support.,Monitor
+007834,2024 Year-End,3,"Good team player, reliable.",None
+007834,2025 Mid-Year,3,"Good team player, reliable.",None
+007834,2025 Year-End,3,Consistent performer.,None
+007834,2026 Mid-Year,3,Assignment times above target. Needs support.,Monitor
+004332,2024 Year-End,4,Consistent performer.,None
+004332,2025 Mid-Year,4,Consistent performer.,None
+004332,2025 Year-End,3,Meets expectations.,None
+004332,2026 Mid-Year,,On extended leave - not rated,None
+007257,2024 Year-End,4,Meets expectations.,None
+007257,2025 Mid-Year,3,Meets expectations.,None
+007257,2025 Year-End,3,Consistent performer.,None
+007257,2026 Mid-Year,2,Contract processing slower than target. Needs support.,Monitor
+004884,2024 Year-End,4,"Good team player, reliable.",None
+004884,2025 Mid-Year,4,Meets expectations.,None
+004884,2025 Year-End,4,Consistent performer.,None
+004884,2026 Mid-Year,3,Contract processing slower than target. Needs support.,Monitor
+005609,2024 Year-End,3,"Good team player, reliable.",None
+005609,2025 Mid-Year,4,Steady month-to-month results.,None
+005609,2025 Year-End,4,Consistent performer.,None
+005609,2026 Mid-Year,4,"Good team player, reliable.",None
+002640,2024 Year-End,4,AMC conversion below target,None
+002640,2025 Mid-Year,2,Consistent performer.,None
+002640,2025 Year-End,4,Consistent performer.,None
+002640,2026 Mid-Year,2,AMC conversion below target. Needs support.,Coaching on proposals
+008702,2024 Year-End,4,AMC conversion below target,None
+008702,2025 Mid-Year,3,AMC conversion below target,None
+008702,2025 Year-End,4,Consistent performer.,None
+008702,2026 Mid-Year,3,AMC conversion below target. Needs support.,Coaching on proposals
+001800,2024 Year-End,3,"Good team player, reliable.",None
+001800,2025 Mid-Year,3,Meets expectations.,None
+001800,2025 Year-End,4,"Good team player, reliable.",None
+001800,2026 Mid-Year,1,AMC conversion below target. Needs support.,Coaching on proposals
