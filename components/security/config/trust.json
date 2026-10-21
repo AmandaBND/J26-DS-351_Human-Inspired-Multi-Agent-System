@@ -1,0 +1,11 @@
+{
+  "initial_trust": 0.85,
+  "alpha": 0.7,
+  "evidence_rule": "minimum_available",
+  "thresholds": {
+    "active": 0.7,
+    "reduced": 0.5,
+    "review": 0.3
+  },
+  "severe_violation_cap": 0.15
+}

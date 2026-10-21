@@ -1,0 +1,222 @@
+{
+  "selector": "ollama",
+  "ollama_model": "qwen2.5:1.5b",
+  "columns": {
+    "customer_history": {
+      "id": [
+        "id",
+        "record",
+        "reference"
+      ],
+      "customer_name": [
+        "customer",
+        "name",
+        "contact",
+        "identify"
+      ],
+      "product": [
+        "printer",
+        "product",
+        "equipment",
+        "device"
+      ],
+      "last_service_date": [
+        "date",
+        "when",
+        "schedule",
+        "timeline"
+      ],
+      "service_status": [
+        "status",
+        "delayed",
+        "delay",
+        "pending",
+        "progress"
+      ]
+    },
+    "complaint_records": {
+      "id": [
+        "id",
+        "ticket",
+        "number"
+      ],
+      "customer_name": [
+        "customer",
+        "name",
+        "contact"
+      ],
+      "product": [
+        "product",
+        "printer",
+        "equipment"
+      ],
+      "category": [
+        "category",
+        "type",
+        "issue"
+      ],
+      "summary": [
+        "summary",
+        "complaint",
+        "details",
+        "resolution",
+        "recommend"
+      ]
+    },
+    "service_history": {
+      "id": [
+        "id",
+        "reference"
+      ],
+      "product": [
+        "product",
+        "equipment",
+        "printer"
+      ],
+      "service_date": [
+        "date",
+        "when",
+        "schedule"
+      ],
+      "service_action": [
+        "action",
+        "service",
+        "repair",
+        "resolution",
+        "recommend"
+      ],
+      "engineer": [
+        "engineer",
+        "technician",
+        "assign"
+      ]
+    },
+    "employee_kpi_records": {
+      "id": [
+        "id",
+        "reference"
+      ],
+      "employee_name": [
+        "employee",
+        "staff",
+        "name",
+        "identify"
+      ],
+      "period": [
+        "period",
+        "month",
+        "quarter",
+        "year",
+        "trend"
+      ],
+      "kpi_score": [
+        "score",
+        "kpi",
+        "performance",
+        "rating",
+        "result"
+      ],
+      "note": [
+        "note",
+        "context",
+        "reason",
+        "recommend",
+        "improve"
+      ]
+    },
+    "approved_performance_history": {
+      "id": [
+        "id",
+        "reference"
+      ],
+      "employee_name": [
+        "employee",
+        "staff",
+        "name"
+      ],
+      "period": [
+        "period",
+        "month",
+        "year",
+        "trend"
+      ],
+      "rating": [
+        "rating",
+        "performance",
+        "score"
+      ],
+      "summary": [
+        "summary",
+        "feedback",
+        "recommend",
+        "review"
+      ]
+    },
+    "warranty_records": {
+      "id": [
+        "id",
+        "reference"
+      ],
+      "product": [
+        "product",
+        "printer",
+        "device"
+      ],
+      "serial_number": [
+        "serial",
+        "number",
+        "equipment"
+      ],
+      "warranty_until": [
+        "warranty",
+        "expiry",
+        "expire",
+        "until"
+      ],
+      "warranty_status": [
+        "warranty",
+        "status",
+        "active",
+        "expired"
+      ]
+    },
+    "approved_customer_service_record": {
+      "id": [
+        "id",
+        "reference"
+      ],
+      "customer_name": [
+        "customer",
+        "name",
+        "contact"
+      ],
+      "product": [
+        "product",
+        "device"
+      ],
+      "approved_action": [
+        "action",
+        "approved",
+        "recommend",
+        "service"
+      ],
+      "status": [
+        "status",
+        "progress",
+        "complete"
+      ]
+    }
+  },
+  "personal_fields": [
+    "customer_name",
+    "employee_name",
+    "engineer"
+  ],
+  "tool_resources": {
+    "complaint_search": "complaint_records",
+    "kpi_query": "employee_kpi_records",
+    "performance_summary": "approved_performance_history",
+    "service_lookup": "service_history",
+    "warranty_check": "warranty_records"
+  }
+}

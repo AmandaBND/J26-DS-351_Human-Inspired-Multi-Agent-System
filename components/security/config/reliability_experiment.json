@@ -1,0 +1,21 @@
+{
+  "random_seed": 42,
+  "events_per_episode": 24,
+  "challenges_per_monitor": 6,
+  "splits": {
+    "train": 80,
+    "validation": 24,
+    "test": 32
+  },
+  "conditions": [
+    "NORMAL",
+    "FALSE_ALLOW",
+    "FALSE_BLOCK",
+    "SELECTIVE_FALSE_ALLOW",
+    "INTERMITTENT_FLIP",
+    "UNAVAILABLE",
+    "COLLUDING",
+    "PROMPT_MANIPULATED"
+  ],
+  "note": "Controlled synthetic reliability benchmark for PP1. It is not enterprise production data."
+}

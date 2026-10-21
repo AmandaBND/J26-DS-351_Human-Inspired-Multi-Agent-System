@@ -1,0 +1,35 @@
+employee_no,designation,base_territory,join_date,employment_status
+002150,Field Technician,Colombo Metro,05/01/2020,Active
+004936,Field Technician,Colombo Metro,15/03/2021,Active
+001829,Sr. Technician,Colombo Metro,23/04/2015,Active
+008544,Sr. Technician,Colombo Metro,08/12/2018,Active
+002807,Technician,Colombo Metro,18/12/2015,Active
+008026,TECHNICIAN,Colombo Metro,21/09/2015,Active
+007442,TECHNICIAN,North Western,14/03/2014,Active
+005052,TECHNICIAN,North Western,23/02/2020,Active
+001845,Sr. Technician,North Western,21/05/2017,Active
+007940,Sr. Technician,North Western,13/10/2014,Active
+008059,Technician,North Western,08/01/2024,Active
+009330,Sr. Technician,North Western,25/04/2021,Active
+007605,TECHNICIAN,Southern,09/05/2021,Active
+005496,TECHNICIAN,Southern,01/02/2020,Active
+005046,Technician,Southern,26/03/2016,Active
+005990,Field Technician,Southern,04/01/2024,Active
+001771,Field Technician,Southern,08/05/2024,Active
+005905,Field Technician,Southern,13/03/2021,Active
+006788,Technician,Central & North-East,23/04/2012,Active
+009758,Technician,Central & North-East,15/02/2012,Active
+008399,Technician,Central & North-East,27/08/2023,Active
+005725,Technician,Central & North-East,01/03/2024,Active
+003044,Sr. Technician,Central & North-East,16/07/2021,Active
+004618,TECHNICIAN,Central & North-East,09/02/2020,Active
+006870,TPO - Service,Central (Head Office),14/10/2024,Active
+004988,Transaction Processing Officer (Service),Central (Head Office),06/11/2024,Active
+007834,Transaction Processing Officer (Service),Central (Head Office),15/11/2015,Active
+004332,Transaction Processing Officer (Service),Central (Head Office),08/05/2020,On Leave
+007257,Contract Processing Officer,Central (Head Office),07/10/2021,Active
+004884,AMC Processor,Central (Head Office),04/06/2022,Active
+005609,AMC Processor,Central (Head Office),17/06/2021,Active
+002640,Contract Co-ordinator,Central (Head Office),24/06/2015,Active
+008702,Contracts Coordinator,Central (Head Office),07/08/2024,Active
+001800,Contracts Coordinator,Central (Head Office),12/03/2024,Active

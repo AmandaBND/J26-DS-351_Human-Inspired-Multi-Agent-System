@@ -1,0 +1,887 @@
+employee_no,period,comment_text
+002150,2024-01,"Routine month, no major issues."
+002150,2024-02,"Routine month, no major issues."
+002150,2024-03,Handled assigned work as usual.
+002150,2024-04,Team coordination was fine this month.
+002150,2024-05,"Routine month, no major issues."
+002150,2024-06,Handled assigned work as usual.
+002150,2024-07,Team coordination was fine this month.
+002150,2024-08,"Routine month, no major issues."
+002150,2024-10,Team coordination was fine this month.
+002150,2024-11,Handled assigned work as usual.
+002150,2024-12,Team coordination was fine this month.
+002150,2025-02,Team coordination was fine this month.
+002150,2025-03,Team coordination was fine this month.
+002150,2025-04,Handled assigned work as usual.
+002150,2025-05,Handled assigned work as usual.
+002150,2025-06,Handled assigned work as usual.
+002150,2025-09,"Routine month, no major issues."
+002150,2025-10,Team coordination was fine this month.
+002150,2025-11,Team coordination was fine this month.
+002150,2025-12,"Routine month, no major issues."
+002150,2026-01,"Routine month, no major issues."
+002150,2026-02,Team coordination was fine this month.
+002150,2026-03,"Routine month, no major issues."
+002150,2026-04,"Routine month, no major issues."
+002150,2026-05,Team coordination was fine this month.
+002150,2026-06,Handled assigned work as usual.
+002150,2026-07,Team coordination was fine this month.
+002150,2026-08,Team coordination was fine this month.
+002150,2026-09,Team coordination was fine this month.
+004936,2024-01,Team coordination was fine this month.
+004936,2024-03,Team coordination was fine this month.
+004936,2024-04,"Routine month, no major issues."
+004936,2024-05,Team coordination was fine this month.
+004936,2024-07,Handled assigned work as usual.
+004936,2024-08,Team coordination was fine this month.
+004936,2024-10,"Routine month, no major issues."
+004936,2024-11,"Routine month, no major issues."
+004936,2024-12,Handled assigned work as usual.
+004936,2025-01,Team coordination was fine this month.
+004936,2025-02,Team coordination was fine this month.
+004936,2025-03,Handled assigned work as usual.
+004936,2025-04,"Routine month, no major issues."
+004936,2025-05,Handled assigned work as usual.
+004936,2025-07,Team coordination was fine this month.
+004936,2025-08,Handled assigned work as usual.
+004936,2025-09,Handled assigned work as usual.
+004936,2025-10,"Routine month, no major issues."
+004936,2025-12,Handled assigned work as usual.
+004936,2026-02,Team coordination was fine this month.
+004936,2026-03,Handled assigned work as usual.
+004936,2026-04,Team coordination was fine this month.
+004936,2026-06,Handled assigned work as usual.
+004936,2026-07,"Routine month, no major issues."
+004936,2026-08,Team coordination was fine this month.
+004936,2026-09,Team coordination was fine this month.
+001829,2024-01,"Routine month, no major issues."
+001829,2024-03,"Routine month, no major issues."
+001829,2024-04,Team coordination was fine this month.
+001829,2024-07,Team coordination was fine this month.
+001829,2024-09,"Routine month, no major issues."
+001829,2024-11,"Routine month, no major issues."
+001829,2024-12,Handled assigned work as usual.
+001829,2025-01,Team coordination was fine this month.
+001829,2025-02,Handled assigned work as usual.
+001829,2025-03,"Routine month, no major issues."
+001829,2025-04,"Routine month, no major issues."
+001829,2025-05,"Routine month, no major issues."
+001829,2025-06,Handled assigned work as usual.
+001829,2025-07,Handled assigned work as usual.
+001829,2025-08,Handled assigned work as usual.
+001829,2025-09,Team coordination was fine this month.
+001829,2025-10,"Routine month, no major issues."
+001829,2025-11,Handled assigned work as usual.
+001829,2025-12,Team coordination was fine this month.
+001829,2026-01,Handled assigned work as usual.
+001829,2026-02,"Routine month, no major issues."
+001829,2026-03,Team coordination was fine this month.
+001829,2026-04,"Routine month, no major issues."
+001829,2026-05,"Routine month, no major issues."
+001829,2026-06,Handled assigned work as usual.
+001829,2026-07,"Routine month, no major issues."
+001829,2026-08,Handled assigned work as usual.
+001829,2026-09,"Routine month, no major issues."
+008544,2024-02,"Routine month, no major issues."
+008544,2024-03,"Routine month, no major issues."
+008544,2024-04,Handled assigned work as usual.
+008544,2024-05,Handled assigned work as usual.
+008544,2024-06,Team coordination was fine this month.
+008544,2024-08,Team coordination was fine this month.
+008544,2024-09,Handled assigned work as usual.
+008544,2024-10,Team coordination was fine this month.
+008544,2024-11,"Routine month, no major issues."
+008544,2024-12,Handled assigned work as usual.
+008544,2025-01,Team coordination was fine this month.
+008544,2025-04,Team coordination was fine this month.
+008544,2025-05,Team coordination was fine this month.
+008544,2025-06,"Routine month, no major issues."
+008544,2025-07,Team coordination was fine this month.
+008544,2025-08,Handled assigned work as usual.
+008544,2025-10,"Routine month, no major issues."
+008544,2026-01,"Routine month, no major issues."
+008544,2026-02,Team coordination was fine this month.
+008544,2026-04,"Routine month, no major issues."
+008544,2026-07,Team coordination was fine this month.
+008544,2026-09,Handled assigned work as usual.
+002807,2024-01,Team coordination was fine this month.
+002807,2024-02,Handled assigned work as usual.
+002807,2024-03,Handled assigned work as usual.
+002807,2024-04,"Routine month, no major issues."
+002807,2024-05,Team coordination was fine this month.
+002807,2024-06,"Routine month, no major issues."
+002807,2024-07,Handled assigned work as usual.
+002807,2024-08,Team coordination was fine this month.
+002807,2024-09,"Routine month, no major issues."
+002807,2024-10,"Routine month, no major issues."
+002807,2024-11,"Routine month, no major issues."
+002807,2024-12,Team coordination was fine this month.
+002807,2025-01,"Routine month, no major issues."
+002807,2025-03,Handled assigned work as usual.
+002807,2025-04,"Routine month, no major issues."
+002807,2025-05,Team coordination was fine this month.
+002807,2025-08,"Routine month, no major issues."
+002807,2025-09,Team coordination was fine this month.
+002807,2025-10,Team coordination was fine this month.
+002807,2025-11,Team coordination was fine this month.
+002807,2025-12,Handled assigned work as usual.
+002807,2026-01,"Routine month, no major issues."
+002807,2026-02,Team coordination was fine this month.
+002807,2026-03,Handled assigned work as usual.
+002807,2026-04,Handled assigned work as usual.
+002807,2026-05,Team coordination was fine this month.
+002807,2026-06,Team coordination was fine this month.
+002807,2026-07,"Routine month, no major issues."
+002807,2026-08,Handled assigned work as usual.
+008026,2024-01,"Routine month, no major issues."
+008026,2024-02,Team coordination was fine this month.
+008026,2024-03,Handled assigned work as usual.
+008026,2024-04,"Routine month, no major issues."
+008026,2024-06,"Routine month, no major issues."
+008026,2024-08,Handled assigned work as usual.
+008026,2024-09,Team coordination was fine this month.
+008026,2024-10,Team coordination was fine this month.
+008026,2024-11,Team coordination was fine this month.
+008026,2024-12,Handled assigned work as usual.
+008026,2025-01,"Routine month, no major issues."
+008026,2025-03,Handled assigned work as usual.
+008026,2025-04,Team coordination was fine this month.
+008026,2025-06,"Good month, targets feel achievable."
+008026,2025-07,"Training helped, jobs are going smoothly."
+008026,2025-08,Feeling confident with the workflow.
+008026,2025-09,"Good month, targets feel achievable."
+008026,2025-10,Feeling confident with the workflow.
+008026,2025-11,"Good month, targets feel achievable."
+008026,2025-12,Feeling confident with the workflow.
+008026,2026-01,"Training helped, jobs are going smoothly."
+008026,2026-03,Feeling confident with the workflow.
+008026,2026-04,"Routine month, no major issues."
+008026,2026-05,Feeling confident with the workflow.
+008026,2026-06,"Training helped, jobs are going smoothly."
+008026,2026-07,Handled assigned work as usual.
+008026,2026-09,Team coordination was fine this month.
+007442,2024-01,Handled assigned work as usual.
+007442,2024-02,"Routine month, no major issues."
+007442,2024-03,Handled assigned work as usual.
+007442,2024-04,"Routine month, no major issues."
+007442,2024-06,"Routine month, no major issues."
+007442,2024-07,Team coordination was fine this month.
+007442,2024-08,Team coordination was fine this month.
+007442,2024-09,Team coordination was fine this month.
+007442,2024-10,Team coordination was fine this month.
+007442,2024-11,"Routine month, no major issues."
+007442,2024-12,"Routine month, no major issues."
+007442,2025-01,"Routine month, no major issues."
+007442,2025-03,Handled assigned work as usual.
+007442,2025-04,Team coordination was fine this month.
+007442,2025-05,Team coordination was fine this month.
+007442,2025-06,Handled assigned work as usual.
+007442,2025-07,Team coordination was fine this month.
+007442,2025-08,"Routine month, no major issues."
+007442,2025-10,Handled assigned work as usual.
+007442,2025-11,Team coordination was fine this month.
+007442,2026-01,Team coordination was fine this month.
+007442,2026-02,Handled assigned work as usual.
+007442,2026-04,Team coordination was fine this month.
+007442,2026-05,Team coordination was fine this month.
+007442,2026-06,Team coordination was fine this month.
+007442,2026-07,Handled assigned work as usual.
+007442,2026-08,"Routine month, no major issues."
+005052,2024-01,Team coordination was fine this month.
+005052,2024-02,"Routine month, no major issues."
+005052,2024-03,Team coordination was fine this month.
+005052,2024-06,Team coordination was fine this month.
+005052,2024-07,Handled assigned work as usual.
+005052,2024-08,Team coordination was fine this month.
+005052,2024-09,"Routine month, no major issues."
+005052,2024-10,Team coordination was fine this month.
+005052,2024-11,"Routine month, no major issues."
+005052,2024-12,Handled assigned work as usual.
+005052,2025-01,Team coordination was fine this month.
+005052,2025-02,Team coordination was fine this month.
+005052,2025-03,Team coordination was fine this month.
+005052,2025-04,Team coordination was fine this month.
+005052,2025-05,Team coordination was fine this month.
+005052,2025-06,Handled assigned work as usual.
+005052,2025-07,Handled assigned work as usual.
+005052,2025-08,"Routine month, no major issues."
+005052,2025-09,"Routine month, no major issues."
+005052,2025-10,Team coordination was fine this month.
+005052,2026-01,"Routine month, no major issues."
+005052,2026-02,"Routine month, no major issues."
+005052,2026-03,"Routine month, no major issues."
+005052,2026-04,Handled assigned work as usual.
+005052,2026-05,"Routine month, no major issues."
+005052,2026-06,Handled assigned work as usual.
+005052,2026-07,Team coordination was fine this month.
+005052,2026-08,"Routine month, no major issues."
+005052,2026-09,"Routine month, no major issues."
+001845,2024-01,Team coordination was fine this month.
+001845,2024-03,"Routine month, no major issues."
+001845,2024-04,"Routine month, no major issues."
+001845,2024-05,"Routine month, no major issues."
+001845,2024-06,"Routine month, no major issues."
+001845,2024-07,Handled assigned work as usual.
+001845,2024-08,Handled assigned work as usual.
+001845,2024-10,Handled assigned work as usual.
+001845,2025-01,Handled assigned work as usual.
+001845,2025-02,Team coordination was fine this month.
+001845,2025-03,"Routine month, no major issues."
+001845,2025-04,"Routine month, no major issues."
+001845,2025-06,"Routine month, no major issues."
+001845,2025-07,Handled assigned work as usual.
+001845,2025-08,Handled assigned work as usual.
+001845,2025-09,"Routine month, no major issues."
+001845,2025-11,Handled assigned work as usual.
+001845,2025-12,Handled assigned work as usual.
+001845,2026-02,Team coordination was fine this month.
+001845,2026-05,Handled assigned work as usual.
+001845,2026-06,"Routine month, no major issues."
+001845,2026-07,Team coordination was fine this month.
+001845,2026-09,Team coordination was fine this month.
+007940,2024-02,Team coordination was fine this month.
+007940,2024-03,Handled assigned work as usual.
+007940,2024-04,Team coordination was fine this month.
+007940,2024-05,"Routine month, no major issues."
+007940,2024-06,"Routine month, no major issues."
+007940,2024-07,Handled assigned work as usual.
+007940,2024-08,Team coordination was fine this month.
+007940,2024-09,Team coordination was fine this month.
+007940,2024-10,Handled assigned work as usual.
+007940,2024-11,"Routine month, no major issues."
+007940,2024-12,"Routine month, no major issues."
+007940,2025-01,Team coordination was fine this month.
+007940,2025-02,"Unfamiliar with the new C3835i model, needed repeat visits."
+007940,2025-03,"Unfamiliar with the new C3835i model, needed repeat visits."
+007940,2025-06,"Routine month, no major issues."
+007940,2025-07,Would benefit from training on the latest product line.
+007940,2025-08,"Training helped, jobs are going smoothly."
+007940,2025-09,"Routine month, no major issues."
+007940,2025-10,"Routine month, no major issues."
+007940,2025-11,Feeling confident with the workflow.
+007940,2025-12,Feeling confident with the workflow.
+007940,2026-01,Feeling confident with the workflow.
+007940,2026-03,Feeling confident with the workflow.
+007940,2026-04,"Training helped, jobs are going smoothly."
+007940,2026-05,"Good month, targets feel achievable."
+007940,2026-06,"Good month, targets feel achievable."
+007940,2026-07,Feeling confident with the workflow.
+007940,2026-08,"Good month, targets feel achievable."
+007940,2026-09,Feeling confident with the workflow.
+008059,2024-02,Team coordination was fine this month.
+008059,2024-06,Handled assigned work as usual.
+008059,2024-07,"Routine month, no major issues."
+008059,2024-08,"Routine month, no major issues."
+008059,2024-09,"Routine month, no major issues."
+008059,2024-11,Handled assigned work as usual.
+008059,2024-12,"Routine month, no major issues."
+008059,2025-01,"Routine month, no major issues."
+008059,2025-02,Handled assigned work as usual.
+008059,2025-03,Team coordination was fine this month.
+008059,2025-04,"Routine month, no major issues."
+008059,2025-05,Handled assigned work as usual.
+008059,2025-06,Team coordination was fine this month.
+008059,2025-07,"Routine month, no major issues."
+008059,2025-08,Handled assigned work as usual.
+008059,2025-10,Handled assigned work as usual.
+008059,2025-11,Team coordination was fine this month.
+008059,2025-12,Handled assigned work as usual.
+008059,2026-01,Team coordination was fine this month.
+008059,2026-02,"Routine month, no major issues."
+008059,2026-04,"Routine month, no major issues."
+008059,2026-05,"Routine month, no major issues."
+008059,2026-06,Many complex jobs and long waits for spare parts this month.
+008059,2026-07,Many complex jobs and long waits for spare parts this month.
+008059,2026-08,"Customers waiting for parts, repeat visits increased."
+008059,2026-09,Many complex jobs and long waits for spare parts this month.
+009330,2024-01,"Routine month, no major issues."
+009330,2024-02,"Routine month, no major issues."
+009330,2024-03,Handled assigned work as usual.
+009330,2024-04,Handled assigned work as usual.
+009330,2024-05,Handled assigned work as usual.
+009330,2024-06,Team coordination was fine this month.
+009330,2024-07,Team coordination was fine this month.
+009330,2024-08,Team coordination was fine this month.
+009330,2024-11,Handled assigned work as usual.
+009330,2024-12,"Routine month, no major issues."
+009330,2025-01,Handled assigned work as usual.
+009330,2025-03,Handled assigned work as usual.
+009330,2025-05,Handled assigned work as usual.
+009330,2025-06,"Routine month, no major issues."
+009330,2025-07,"Routine month, no major issues."
+009330,2025-09,Team coordination was fine this month.
+009330,2025-10,Team coordination was fine this month.
+009330,2025-11,Handled assigned work as usual.
+009330,2025-12,Handled assigned work as usual.
+009330,2026-01,Handled assigned work as usual.
+009330,2026-02,Team coordination was fine this month.
+009330,2026-03,Team coordination was fine this month.
+009330,2026-05,Team coordination was fine this month.
+009330,2026-06,Handled assigned work as usual.
+009330,2026-07,"Routine month, no major issues."
+009330,2026-08,Team coordination was fine this month.
+009330,2026-09,Handled assigned work as usual.
+007605,2024-01,Handled assigned work as usual.
+007605,2024-02,Handled assigned work as usual.
+007605,2024-03,Handled assigned work as usual.
+007605,2024-04,Team coordination was fine this month.
+007605,2024-05,Handled assigned work as usual.
+007605,2024-06,"Routine month, no major issues."
+007605,2024-08,"Routine month, no major issues."
+007605,2024-09,Handled assigned work as usual.
+007605,2024-10,Handled assigned work as usual.
+007605,2024-11,Team coordination was fine this month.
+007605,2024-12,"Routine month, no major issues."
+007605,2025-01,"Routine month, no major issues."
+007605,2025-02,Team coordination was fine this month.
+007605,2025-03,Team coordination was fine this month.
+007605,2025-04,Team coordination was fine this month.
+007605,2025-06,Handled assigned work as usual.
+007605,2025-07,Team coordination was fine this month.
+007605,2025-08,"Routine month, no major issues."
+007605,2025-09,"Routine month, no major issues."
+007605,2025-11,Handled assigned work as usual.
+007605,2025-12,"Routine month, no major issues."
+007605,2026-01,"Routine month, no major issues."
+007605,2026-02,"Routine month, no major issues."
+007605,2026-03,Team coordination was fine this month.
+007605,2026-06,Handled assigned work as usual.
+007605,2026-08,Team coordination was fine this month.
+005496,2024-01,"Routine month, no major issues."
+005496,2024-02,"Routine month, no major issues."
+005496,2024-04,Team coordination was fine this month.
+005496,2024-05,Team coordination was fine this month.
+005496,2024-06,Team coordination was fine this month.
+005496,2024-07,Handled assigned work as usual.
+005496,2024-09,Handled assigned work as usual.
+005496,2024-10,Team coordination was fine this month.
+005496,2024-11,Handled assigned work as usual.
+005496,2024-12,Handled assigned work as usual.
+005496,2025-01,Handled assigned work as usual.
+005496,2025-02,"Routine month, no major issues."
+005496,2025-04,Handled assigned work as usual.
+005496,2025-05,Team coordination was fine this month.
+005496,2025-08,Handled assigned work as usual.
+005496,2025-09,Team coordination was fine this month.
+005496,2025-10,Handled assigned work as usual.
+005496,2025-12,Handled assigned work as usual.
+005496,2026-01,Handled assigned work as usual.
+005496,2026-02,Handled assigned work as usual.
+005496,2026-03,Team coordination was fine this month.
+005496,2026-04,Struggling to keep up with the daily workload.
+005496,2026-05,Backlog keeps growing and overtime is heavy.
+005496,2026-07,Backlog keeps growing and overtime is heavy.
+005496,2026-08,"Too many jobs assigned, working late most days."
+005496,2026-09,"Routine month, no major issues."
+005046,2024-01,Team coordination was fine this month.
+005046,2024-03,"Routine month, no major issues."
+005046,2024-04,Team coordination was fine this month.
+005046,2024-05,Team coordination was fine this month.
+005046,2024-06,Handled assigned work as usual.
+005046,2024-07,"Routine month, no major issues."
+005046,2024-08,"Routine month, no major issues."
+005046,2024-09,Team coordination was fine this month.
+005046,2024-11,Team coordination was fine this month.
+005046,2024-12,"Routine month, no major issues."
+005046,2025-01,Handled assigned work as usual.
+005046,2025-02,Team coordination was fine this month.
+005046,2025-03,Handled assigned work as usual.
+005046,2025-04,"Routine month, no major issues."
+005046,2025-05,"Routine month, no major issues."
+005046,2025-06,Team coordination was fine this month.
+005046,2025-07,Handled assigned work as usual.
+005046,2025-08,Team coordination was fine this month.
+005046,2025-10,Handled assigned work as usual.
+005046,2025-12,Handled assigned work as usual.
+005046,2026-01,"Routine month, no major issues."
+005046,2026-02,Handled assigned work as usual.
+005046,2026-03,Team coordination was fine this month.
+005046,2026-04,Handled assigned work as usual.
+005046,2026-05,"Unfamiliar with the new C3835i model, needed repeat visits."
+005046,2026-06,Would benefit from training on the latest product line.
+005046,2026-08,Would benefit from training on the latest product line.
+005990,2024-01,"Routine month, no major issues."
+005990,2024-02,Team coordination was fine this month.
+005990,2024-03,Team coordination was fine this month.
+005990,2024-04,Handled assigned work as usual.
+005990,2024-05,Handled assigned work as usual.
+005990,2024-07,Team coordination was fine this month.
+005990,2024-08,Team coordination was fine this month.
+005990,2024-09,Team coordination was fine this month.
+005990,2024-10,Handled assigned work as usual.
+005990,2024-12,"Routine month, no major issues."
+005990,2025-01,"Routine month, no major issues."
+005990,2025-02,Handled assigned work as usual.
+005990,2025-03,"Routine month, no major issues."
+005990,2025-04,"Routine month, no major issues."
+005990,2025-06,"Routine month, no major issues."
+005990,2025-07,Handled assigned work as usual.
+005990,2025-08,Team coordination was fine this month.
+005990,2025-09,"Routine month, no major issues."
+005990,2025-10,"Routine month, no major issues."
+005990,2025-11,Team coordination was fine this month.
+005990,2026-02,"Routine month, no major issues."
+005990,2026-03,Handled assigned work as usual.
+005990,2026-06,Handled assigned work as usual.
+005990,2026-07,Handled assigned work as usual.
+005990,2026-08,"Routine month, no major issues."
+005990,2026-09,Handled assigned work as usual.
+001771,2024-01,"Routine month, no major issues."
+001771,2024-02,Team coordination was fine this month.
+001771,2024-03,"Routine month, no major issues."
+001771,2024-04,"Routine month, no major issues."
+001771,2024-05,"Routine month, no major issues."
+001771,2024-06,Team coordination was fine this month.
+001771,2024-09,"Routine month, no major issues."
+001771,2024-10,Team coordination was fine this month.
+001771,2024-11,Handled assigned work as usual.
+001771,2024-12,Handled assigned work as usual.
+001771,2025-01,Handled assigned work as usual.
+001771,2025-02,Handled assigned work as usual.
+001771,2025-09,Team coordination was fine this month.
+001771,2025-10,Team coordination was fine this month.
+001771,2025-11,"Routine month, no major issues."
+001771,2025-12,"Routine month, no major issues."
+001771,2026-01,"Routine month, no major issues."
+001771,2026-04,Handled assigned work as usual.
+001771,2026-05,"Routine month, no major issues."
+001771,2026-07,Handled assigned work as usual.
+001771,2026-08,Handled assigned work as usual.
+001771,2026-09,Team coordination was fine this month.
+005905,2024-01,"Routine month, no major issues."
+005905,2024-02,Handled assigned work as usual.
+005905,2024-03,Team coordination was fine this month.
+005905,2024-04,Handled assigned work as usual.
+005905,2024-05,"Routine month, no major issues."
+005905,2024-06,Handled assigned work as usual.
+005905,2024-07,Handled assigned work as usual.
+005905,2024-08,Team coordination was fine this month.
+005905,2024-12,"Routine month, no major issues."
+005905,2025-01,Team coordination was fine this month.
+005905,2025-02,Team coordination was fine this month.
+005905,2025-03,Handled assigned work as usual.
+005905,2025-04,Team coordination was fine this month.
+005905,2025-07,"Routine month, no major issues."
+005905,2025-08,Team coordination was fine this month.
+005905,2025-09,Team coordination was fine this month.
+005905,2025-10,"Routine month, no major issues."
+005905,2025-11,Handled assigned work as usual.
+005905,2025-12,"Routine month, no major issues."
+005905,2026-01,Handled assigned work as usual.
+005905,2026-02,Team coordination was fine this month.
+005905,2026-03,Handled assigned work as usual.
+005905,2026-04,"Routine month, no major issues."
+005905,2026-05,"Routine month, no major issues."
+005905,2026-06,"Routine month, no major issues."
+005905,2026-08,"Routine month, no major issues."
+005905,2026-09,Handled assigned work as usual.
+006788,2024-01,Handled assigned work as usual.
+006788,2024-02,Handled assigned work as usual.
+006788,2024-03,"Routine month, no major issues."
+006788,2024-04,Team coordination was fine this month.
+006788,2024-05,Team coordination was fine this month.
+006788,2024-06,"Routine month, no major issues."
+006788,2024-08,Handled assigned work as usual.
+006788,2024-11,Handled assigned work as usual.
+006788,2024-12,Handled assigned work as usual.
+006788,2025-01,Team coordination was fine this month.
+006788,2025-02,Team coordination was fine this month.
+006788,2025-03,Handled assigned work as usual.
+006788,2025-04,"Routine month, no major issues."
+006788,2025-05,Handled assigned work as usual.
+006788,2025-06,"Routine month, no major issues."
+006788,2025-07,Handled assigned work as usual.
+006788,2025-08,"Routine month, no major issues."
+006788,2025-10,"Routine month, no major issues."
+006788,2025-11,"Routine month, no major issues."
+006788,2025-12,Team coordination was fine this month.
+006788,2026-01,"Routine month, no major issues."
+006788,2026-06,"Unfamiliar with the new C3835i model, needed repeat visits."
+006788,2026-07,"Routine month, no major issues."
+006788,2026-08,Not confident handling the new systems.
+009758,2024-01,"Routine month, no major issues."
+009758,2024-02,"Routine month, no major issues."
+009758,2024-03,Handled assigned work as usual.
+009758,2024-05,"Routine month, no major issues."
+009758,2024-07,Team coordination was fine this month.
+009758,2024-08,Team coordination was fine this month.
+009758,2024-09,Handled assigned work as usual.
+009758,2024-10,"Routine month, no major issues."
+009758,2025-01,Team coordination was fine this month.
+009758,2025-02,Team coordination was fine this month.
+009758,2025-03,Handled assigned work as usual.
+009758,2025-04,Handled assigned work as usual.
+009758,2025-05,"Routine month, no major issues."
+009758,2025-07,Team coordination was fine this month.
+009758,2025-08,"Routine month, no major issues."
+009758,2025-09,"Routine month, no major issues."
+009758,2025-10,Team coordination was fine this month.
+009758,2025-11,"Routine month, no major issues."
+009758,2025-12,Handled assigned work as usual.
+009758,2026-01,"Routine month, no major issues."
+009758,2026-02,Team coordination was fine this month.
+009758,2026-03,"Routine month, no major issues."
+009758,2026-06,Team coordination was fine this month.
+009758,2026-07,Handled assigned work as usual.
+009758,2026-08,Handled assigned work as usual.
+009758,2026-09,Handled assigned work as usual.
+008399,2024-02,Team coordination was fine this month.
+008399,2024-03,Team coordination was fine this month.
+008399,2024-04,Team coordination was fine this month.
+008399,2024-05,Handled assigned work as usual.
+008399,2024-07,"Routine month, no major issues."
+008399,2024-08,"Routine month, no major issues."
+008399,2024-09,"Routine month, no major issues."
+008399,2024-10,Handled assigned work as usual.
+008399,2024-12,Team coordination was fine this month.
+008399,2025-01,"Routine month, no major issues."
+008399,2025-02,Handled assigned work as usual.
+008399,2025-03,Team coordination was fine this month.
+008399,2025-04,Team coordination was fine this month.
+008399,2025-05,Handled assigned work as usual.
+008399,2025-10,Handled assigned work as usual.
+008399,2025-11,Handled assigned work as usual.
+008399,2025-12,"Routine month, no major issues."
+008399,2026-01,Team coordination was fine this month.
+008399,2026-02,Team coordination was fine this month.
+008399,2026-03,Handled assigned work as usual.
+008399,2026-04,Team coordination was fine this month.
+008399,2026-05,"Routine month, no major issues."
+008399,2026-06,"Customers waiting for parts, repeat visits increased."
+008399,2026-08,"Customers waiting for parts, repeat visits increased."
+005725,2024-01,Team coordination was fine this month.
+005725,2024-03,"Routine month, no major issues."
+005725,2024-04,Team coordination was fine this month.
+005725,2024-05,"Routine month, no major issues."
+005725,2024-06,Team coordination was fine this month.
+005725,2024-07,Handled assigned work as usual.
+005725,2024-09,"Routine month, no major issues."
+005725,2024-11,Team coordination was fine this month.
+005725,2025-01,Handled assigned work as usual.
+005725,2025-02,Team coordination was fine this month.
+005725,2025-03,Handled assigned work as usual.
+005725,2025-04,Handled assigned work as usual.
+005725,2025-05,Handled assigned work as usual.
+005725,2025-06,"Routine month, no major issues."
+005725,2025-07,"Routine month, no major issues."
+005725,2025-08,Handled assigned work as usual.
+005725,2025-09,Team coordination was fine this month.
+005725,2025-10,Team coordination was fine this month.
+005725,2025-12,Team coordination was fine this month.
+005725,2026-01,"Routine month, no major issues."
+005725,2026-02,Handled assigned work as usual.
+005725,2026-03,Team coordination was fine this month.
+005725,2026-04,"Too many jobs assigned, working late most days."
+005725,2026-05,Team coordination was fine this month.
+005725,2026-06,Backlog keeps growing and overtime is heavy.
+005725,2026-08,"Too many jobs assigned, working late most days."
+005725,2026-09,"Too many jobs assigned, working late most days."
+003044,2024-02,Handled assigned work as usual.
+003044,2024-03,Handled assigned work as usual.
+003044,2024-04,Team coordination was fine this month.
+003044,2024-05,Handled assigned work as usual.
+003044,2024-07,Handled assigned work as usual.
+003044,2024-08,Handled assigned work as usual.
+003044,2024-09,Team coordination was fine this month.
+003044,2024-11,Handled assigned work as usual.
+003044,2025-01,"Routine month, no major issues."
+003044,2025-04,Team coordination was fine this month.
+003044,2025-05,"Routine month, no major issues."
+003044,2025-06,Handled assigned work as usual.
+003044,2025-07,"Routine month, no major issues."
+003044,2025-08,Team coordination was fine this month.
+003044,2025-09,"Routine month, no major issues."
+003044,2025-11,"Routine month, no major issues."
+003044,2025-12,Team coordination was fine this month.
+003044,2026-01,Team coordination was fine this month.
+003044,2026-02,Team coordination was fine this month.
+003044,2026-03,Handled assigned work as usual.
+003044,2026-04,Handled assigned work as usual.
+003044,2026-06,Handled assigned work as usual.
+003044,2026-07,"Routine month, no major issues."
+003044,2026-08,Team coordination was fine this month.
+004618,2024-01,Handled assigned work as usual.
+004618,2024-02,Team coordination was fine this month.
+004618,2024-03,Handled assigned work as usual.
+004618,2024-04,"Routine month, no major issues."
+004618,2024-05,Handled assigned work as usual.
+004618,2024-06,"Routine month, no major issues."
+004618,2024-07,Team coordination was fine this month.
+004618,2024-08,Team coordination was fine this month.
+004618,2024-09,Team coordination was fine this month.
+004618,2024-10,Handled assigned work as usual.
+004618,2025-01,"Routine month, no major issues."
+004618,2025-02,Team coordination was fine this month.
+004618,2025-03,Handled assigned work as usual.
+004618,2025-05,Handled assigned work as usual.
+004618,2025-06,Team coordination was fine this month.
+004618,2025-08,"Routine month, no major issues."
+004618,2025-09,Team coordination was fine this month.
+004618,2025-10,"Routine month, no major issues."
+004618,2025-11,Handled assigned work as usual.
+004618,2025-12,Handled assigned work as usual.
+004618,2026-02,"Routine month, no major issues."
+004618,2026-03,Team coordination was fine this month.
+004618,2026-04,Handled assigned work as usual.
+004618,2026-05,Team coordination was fine this month.
+004618,2026-06,Team coordination was fine this month.
+004618,2026-07,Handled assigned work as usual.
+004618,2026-08,Team coordination was fine this month.
+006870,2024-01,Handled assigned work as usual.
+006870,2024-02,Handled assigned work as usual.
+006870,2024-03,"Routine month, no major issues."
+006870,2024-04,Team coordination was fine this month.
+006870,2024-05,Handled assigned work as usual.
+006870,2024-06,"Routine month, no major issues."
+006870,2024-08,"Routine month, no major issues."
+006870,2024-09,Handled assigned work as usual.
+006870,2024-10,"Routine month, no major issues."
+006870,2024-11,"Routine month, no major issues."
+006870,2025-01,Team coordination was fine this month.
+006870,2025-02,Team coordination was fine this month.
+006870,2025-03,Handled assigned work as usual.
+006870,2025-04,Team coordination was fine this month.
+006870,2025-05,Team coordination was fine this month.
+006870,2025-06,"Routine month, no major issues."
+006870,2025-07,"Routine month, no major issues."
+006870,2025-08,"Routine month, no major issues."
+006870,2025-09,Team coordination was fine this month.
+006870,2025-10,Handled assigned work as usual.
+006870,2025-11,Team coordination was fine this month.
+006870,2026-01,Handled assigned work as usual.
+006870,2026-02,"Routine month, no major issues."
+006870,2026-03,Handled assigned work as usual.
+006870,2026-07,A colleague is on leave and the assignment backlog keeps growing.
+006870,2026-08,"Too many unassigned jobs, hard to keep up with requests."
+006870,2026-09,"Routine month, no major issues."
+004988,2024-01,Team coordination was fine this month.
+004988,2024-02,"Routine month, no major issues."
+004988,2024-05,Team coordination was fine this month.
+004988,2024-06,Handled assigned work as usual.
+004988,2024-08,Handled assigned work as usual.
+004988,2024-09,Handled assigned work as usual.
+004988,2024-10,Handled assigned work as usual.
+004988,2024-11,Handled assigned work as usual.
+004988,2024-12,Handled assigned work as usual.
+004988,2025-02,Handled assigned work as usual.
+004988,2025-03,"Routine month, no major issues."
+004988,2025-04,"Routine month, no major issues."
+004988,2025-05,"Routine month, no major issues."
+004988,2025-06,"Routine month, no major issues."
+004988,2025-07,Team coordination was fine this month.
+004988,2025-09,"Routine month, no major issues."
+004988,2025-10,"Routine month, no major issues."
+004988,2025-11,Handled assigned work as usual.
+004988,2025-12,Handled assigned work as usual.
+004988,2026-01,Team coordination was fine this month.
+004988,2026-02,"Routine month, no major issues."
+004988,2026-03,Team coordination was fine this month.
+004988,2026-04,Handled assigned work as usual.
+004988,2026-05,Handled assigned work as usual.
+004988,2026-06,A colleague is on leave and the assignment backlog keeps growing.
+004988,2026-07,"Too many unassigned jobs, hard to keep up with requests."
+004988,2026-08,"Too many unassigned jobs, hard to keep up with requests."
+004988,2026-09,"Too many unassigned jobs, hard to keep up with requests."
+007834,2024-01,Team coordination was fine this month.
+007834,2024-04,Team coordination was fine this month.
+007834,2024-05,"Routine month, no major issues."
+007834,2024-06,"Routine month, no major issues."
+007834,2024-07,Handled assigned work as usual.
+007834,2024-08,Handled assigned work as usual.
+007834,2024-11,Handled assigned work as usual.
+007834,2024-12,Handled assigned work as usual.
+007834,2025-01,"Routine month, no major issues."
+007834,2025-02,"Routine month, no major issues."
+007834,2025-03,Team coordination was fine this month.
+007834,2025-05,"Routine month, no major issues."
+007834,2025-06,Handled assigned work as usual.
+007834,2025-07,"Routine month, no major issues."
+007834,2025-09,Handled assigned work as usual.
+007834,2025-10,"Routine month, no major issues."
+007834,2025-11,Handled assigned work as usual.
+007834,2025-12,Team coordination was fine this month.
+007834,2026-01,Team coordination was fine this month.
+007834,2026-02,"Routine month, no major issues."
+007834,2026-03,Handled assigned work as usual.
+007834,2026-04,Team coordination was fine this month.
+007834,2026-05,Handled assigned work as usual.
+007834,2026-06,A colleague is on leave and the assignment backlog keeps growing.
+007834,2026-07,"Routine month, no major issues."
+007834,2026-08,A colleague is on leave and the assignment backlog keeps growing.
+007834,2026-09,A colleague is on leave and the assignment backlog keeps growing.
+004332,2024-01,"Routine month, no major issues."
+004332,2024-05,Team coordination was fine this month.
+004332,2024-06,Handled assigned work as usual.
+004332,2024-08,Handled assigned work as usual.
+004332,2024-09,Handled assigned work as usual.
+004332,2024-11,"Routine month, no major issues."
+004332,2024-12,"Routine month, no major issues."
+004332,2025-01,Handled assigned work as usual.
+004332,2025-02,Handled assigned work as usual.
+004332,2025-03,Handled assigned work as usual.
+004332,2025-05,Handled assigned work as usual.
+004332,2025-06,"Routine month, no major issues."
+004332,2025-07,"Routine month, no major issues."
+004332,2025-08,"Routine month, no major issues."
+004332,2025-11,Handled assigned work as usual.
+004332,2025-12,Handled assigned work as usual.
+004332,2026-03,"Routine month, no major issues."
+004332,2026-04,"Routine month, no major issues."
+007257,2024-01,Handled assigned work as usual.
+007257,2024-02,Team coordination was fine this month.
+007257,2024-03,"Routine month, no major issues."
+007257,2024-05,Team coordination was fine this month.
+007257,2024-06,Team coordination was fine this month.
+007257,2024-08,Team coordination was fine this month.
+007257,2024-09,Team coordination was fine this month.
+007257,2024-11,Handled assigned work as usual.
+007257,2024-12,Handled assigned work as usual.
+007257,2025-01,Handled assigned work as usual.
+007257,2025-02,"Routine month, no major issues."
+007257,2025-03,Team coordination was fine this month.
+007257,2025-04,Team coordination was fine this month.
+007257,2025-05,"Routine month, no major issues."
+007257,2025-06,Handled assigned work as usual.
+007257,2025-07,"Routine month, no major issues."
+007257,2025-08,Team coordination was fine this month.
+007257,2025-09,Handled assigned work as usual.
+007257,2025-11,Handled assigned work as usual.
+007257,2026-01,"Routine month, no major issues."
+007257,2026-02,"Routine month, no major issues."
+007257,2026-03,Handled assigned work as usual.
+007257,2026-04,Handled assigned work as usual.
+007257,2026-05,Spending most of the time chasing incomplete equipment details.
+007257,2026-06,"Many proposals arrive with missing approval details, contracts stuck waiting."
+007257,2026-09,"Many proposals arrive with missing approval details, contracts stuck waiting."
+004884,2024-02,Team coordination was fine this month.
+004884,2024-03,"Routine month, no major issues."
+004884,2024-04,"Routine month, no major issues."
+004884,2024-05,"Routine month, no major issues."
+004884,2024-06,Team coordination was fine this month.
+004884,2024-07,"Routine month, no major issues."
+004884,2024-08,"Routine month, no major issues."
+004884,2024-09,"Routine month, no major issues."
+004884,2024-12,"Routine month, no major issues."
+004884,2025-01,"Routine month, no major issues."
+004884,2025-02,Handled assigned work as usual.
+004884,2025-03,Team coordination was fine this month.
+004884,2025-06,Team coordination was fine this month.
+004884,2025-07,Handled assigned work as usual.
+004884,2025-08,Team coordination was fine this month.
+004884,2025-09,"Routine month, no major issues."
+004884,2025-10,Team coordination was fine this month.
+004884,2025-12,Handled assigned work as usual.
+004884,2026-01,Team coordination was fine this month.
+004884,2026-03,Team coordination was fine this month.
+004884,2026-04,Handled assigned work as usual.
+004884,2026-05,Spending most of the time chasing incomplete equipment details.
+004884,2026-06,"Many proposals arrive with missing approval details, contracts stuck waiting."
+004884,2026-07,Spending most of the time chasing incomplete equipment details.
+004884,2026-08,Spending most of the time chasing incomplete equipment details.
+004884,2026-09,Spending most of the time chasing incomplete equipment details.
+005609,2024-01,"Routine month, no major issues."
+005609,2024-03,Team coordination was fine this month.
+005609,2024-04,Handled assigned work as usual.
+005609,2024-06,Team coordination was fine this month.
+005609,2024-07,Team coordination was fine this month.
+005609,2024-08,Team coordination was fine this month.
+005609,2024-09,Handled assigned work as usual.
+005609,2024-10,Handled assigned work as usual.
+005609,2024-11,Handled assigned work as usual.
+005609,2025-01,"Routine month, no major issues."
+005609,2025-02,"Routine month, no major issues."
+005609,2025-03,Team coordination was fine this month.
+005609,2025-04,Team coordination was fine this month.
+005609,2025-05,Team coordination was fine this month.
+005609,2025-06,Handled assigned work as usual.
+005609,2025-07,Handled assigned work as usual.
+005609,2025-08,Handled assigned work as usual.
+005609,2025-11,"Routine month, no major issues."
+005609,2025-12,Handled assigned work as usual.
+005609,2026-01,Team coordination was fine this month.
+005609,2026-02,Team coordination was fine this month.
+005609,2026-05,"Routine month, no major issues."
+005609,2026-07,Team coordination was fine this month.
+005609,2026-08,"Routine month, no major issues."
+005609,2026-09,"Routine month, no major issues."
+002640,2024-01,Handled assigned work as usual.
+002640,2024-02,Handled assigned work as usual.
+002640,2024-03,Team coordination was fine this month.
+002640,2024-04,Handled assigned work as usual.
+002640,2024-05,Handled assigned work as usual.
+002640,2024-06,"Routine month, no major issues."
+002640,2024-07,"Routine month, no major issues."
+002640,2024-08,"Routine month, no major issues."
+002640,2024-09,"Routine month, no major issues."
+002640,2024-10,"Routine month, no major issues."
+002640,2025-02,"Routine month, no major issues."
+002640,2025-04,Handled assigned work as usual.
+002640,2025-05,Team coordination was fine this month.
+002640,2025-06,Handled assigned work as usual.
+002640,2025-08,"Routine month, no major issues."
+002640,2025-09,"Routine month, no major issues."
+002640,2025-10,Handled assigned work as usual.
+002640,2025-11,Team coordination was fine this month.
+002640,2026-01,Team coordination was fine this month.
+002640,2026-02,Handled assigned work as usual.
+002640,2026-03,Handled assigned work as usual.
+002640,2026-04,"Routine month, no major issues."
+002640,2026-05,Customer budget limits make AMC renewals hard.
+002640,2026-06,Customers say a competitor's AMC price is cheaper.
+002640,2026-07,Price increase is putting customers off.
+002640,2026-08,Customers say a competitor's AMC price is cheaper.
+002640,2026-09,"Routine month, no major issues."
+008702,2024-01,Handled assigned work as usual.
+008702,2024-02,Team coordination was fine this month.
+008702,2024-03,"Routine month, no major issues."
+008702,2024-04,Handled assigned work as usual.
+008702,2024-05,Team coordination was fine this month.
+008702,2024-06,Handled assigned work as usual.
+008702,2024-07,"Routine month, no major issues."
+008702,2024-10,Handled assigned work as usual.
+008702,2024-12,Handled assigned work as usual.
+008702,2025-01,Team coordination was fine this month.
+008702,2025-02,"Routine month, no major issues."
+008702,2025-03,Team coordination was fine this month.
+008702,2025-04,Handled assigned work as usual.
+008702,2025-05,"Routine month, no major issues."
+008702,2025-06,"Routine month, no major issues."
+008702,2025-07,"Routine month, no major issues."
+008702,2025-08,Team coordination was fine this month.
+008702,2025-09,Handled assigned work as usual.
+008702,2025-10,Team coordination was fine this month.
+008702,2025-11,"Routine month, no major issues."
+008702,2025-12,Team coordination was fine this month.
+008702,2026-01,Handled assigned work as usual.
+008702,2026-03,"Routine month, no major issues."
+008702,2026-04,"Routine month, no major issues."
+008702,2026-05,Customers say a competitor's AMC price is cheaper.
+008702,2026-06,Customer budget limits make AMC renewals hard.
+008702,2026-07,Price increase is putting customers off.
+008702,2026-08,Price increase is putting customers off.
+008702,2026-09,Price increase is putting customers off.
+001800,2024-01,Handled assigned work as usual.
+001800,2024-03,"Routine month, no major issues."
+001800,2024-04,Team coordination was fine this month.
+001800,2024-06,"Routine month, no major issues."
+001800,2024-07,Handled assigned work as usual.
+001800,2024-08,"Routine month, no major issues."
+001800,2024-10,Handled assigned work as usual.
+001800,2024-11,Team coordination was fine this month.
+001800,2024-12,Team coordination was fine this month.
+001800,2025-01,Handled assigned work as usual.
+001800,2025-02,"Routine month, no major issues."
+001800,2025-03,Handled assigned work as usual.
+001800,2025-05,"Routine month, no major issues."
+001800,2025-06,"Routine month, no major issues."
+001800,2025-07,Team coordination was fine this month.
+001800,2025-08,Team coordination was fine this month.
+001800,2025-09,Team coordination was fine this month.
+001800,2025-10,"Routine month, no major issues."
+001800,2026-02,Handled assigned work as usual.
+001800,2026-03,"Routine month, no major issues."
+001800,2026-04,"Routine month, no major issues."
+001800,2026-06,Customers say a competitor's AMC price is cheaper.
+001800,2026-07,Customer budget limits make AMC renewals hard.
+001800,2026-08,Customer budget limits make AMC renewals hard.
+001800,2026-09,Customer budget limits make AMC renewals hard.

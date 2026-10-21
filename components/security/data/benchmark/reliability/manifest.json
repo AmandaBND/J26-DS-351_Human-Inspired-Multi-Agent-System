@@ -1,0 +1,48 @@
+{
+  "benchmark": "controlled_security_monitor_reliability",
+  "random_seed": 42,
+  "events_per_episode": 24,
+  "challenges_per_monitor": 6,
+  "monitors": [
+    "semantic-monitor",
+    "policy-monitor",
+    "behavior-monitor"
+  ],
+  "conditions": [
+    "NORMAL",
+    "FALSE_ALLOW",
+    "FALSE_BLOCK",
+    "SELECTIVE_FALSE_ALLOW",
+    "INTERMITTENT_FLIP",
+    "UNAVAILABLE",
+    "COLLUDING",
+    "PROMPT_MANIPULATED"
+  ],
+  "splits": {
+    "train": {
+      "split": "train",
+      "episodes": 80,
+      "decision_records": 5760,
+      "challenge_records": 1440,
+      "feature_rows": 240,
+      "feature_file": "E:\\Amanda\\0IT23280274\\Y4 S1\\Reserach\\J26-DS-351_Human-Inspired-Multi-Agent-System\\components\\security\\data\\benchmark\\reliability\\train_features.csv"
+    },
+    "validation": {
+      "split": "validation",
+      "episodes": 24,
+      "decision_records": 1728,
+      "challenge_records": 432,
+      "feature_rows": 72,
+      "feature_file": "E:\\Amanda\\0IT23280274\\Y4 S1\\Reserach\\J26-DS-351_Human-Inspired-Multi-Agent-System\\components\\security\\data\\benchmark\\reliability\\validation_features.csv"
+    },
+    "test": {
+      "split": "test",
+      "episodes": 32,
+      "decision_records": 2304,
+      "challenge_records": 576,
+      "feature_rows": 96,
+      "feature_file": "E:\\Amanda\\0IT23280274\\Y4 S1\\Reserach\\J26-DS-351_Human-Inspired-Multi-Agent-System\\components\\security\\data\\benchmark\\reliability\\test_features.csv"
+    }
+  },
+  "warning": "Synthetic controlled benchmark for PP1; not production enterprise data."
+}
