@@ -25,6 +25,13 @@ def test_init_db_additively_migrates_existing_sqlite_schema():
             "competitor_offers FLOAT, budget_constrained_share FLOAT, avg_equipment_age FLOAT)"
         )
         connection.exec_driver_sql(
+            "CREATE TABLE recommendations ("
+            "id INTEGER PRIMARY KEY, employee_id INTEGER, as_of VARCHAR(7), cause VARCHAR(20), "
+            "headline VARCHAR(200), actions TEXT, priority VARCHAR(10), monitor_kpis TEXT, "
+            "diagnosis_summary TEXT, status VARCHAR(12), reviewer_note TEXT, created_at DATETIME, "
+            "decided_at DATETIME)"
+        )
+        connection.exec_driver_sql(
             "INSERT INTO employees VALUES (1, 'EMP-001', 'technician', 'Team A', 2020)"
         )
         connection.exec_driver_sql(
@@ -53,7 +60,12 @@ def test_init_db_additively_migrates_existing_sqlite_schema():
         database_engine,
     )
     assert context.iloc[0].tolist() == [0.0, 0.0]
-    for table_name in ("employees", "kpi_records", "context_records"):
+    for table_name in ("employees", "kpi_records", "context_records", "recommendations"):
         actual = {column["name"] for column in inspect(database_engine).get_columns(table_name)}
         expected = {column.name for column in Base.metadata.tables[table_name].columns}
         assert expected <= actual
+    recommendation_columns = {
+        column["name"] for column in inspect(database_engine).get_columns("recommendations")
+    }
+    assert "assessment_context_factors" in recommendation_columns
+    assert "assessment_context_note" in recommendation_columns

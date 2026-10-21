@@ -68,6 +68,33 @@ def test_expected_diagnoses(bundle):
         assert r.recommendations and r.recommendations[0].requires_human_review
 
 
+def test_manager_context_informs_assessment_without_changing_kpi_score(bundle):
+    baseline = run_assessment(bundle, "EMP-003", use_llm=False)
+    contextual = run_assessment(
+        bundle,
+        "EMP-003",
+        use_llm=False,
+        manager_factors=["system_process"],
+        manager_note="A service platform outage affected this reporting period.",
+    )
+
+    assert contextual.overall_score == baseline.overall_score
+    assert contextual.manager_context_factors == ["system_process"]
+    assert contextual.manager_context_note in contextual.narrative
+    baseline_process_score = next(
+        item.score for item in baseline.diagnosis.ranked if item.cause == "process"
+    )
+    contextual_process_score = next(
+        item.score for item in contextual.diagnosis.ranked if item.cause == "process"
+    )
+    assert contextual_process_score == pytest.approx(baseline_process_score + 0.25)
+    assert any(
+        "Manager-reported context" in evidence
+        for item in contextual.diagnosis.ranked if item.cause == "process"
+        for evidence in item.evidence
+    )
+
+
 def test_stable_employee_not_flagged(bundle):
     r = run_assessment(bundle, "EMP-001")
     assert not r.deviation.is_deviating and r.diagnosis is None

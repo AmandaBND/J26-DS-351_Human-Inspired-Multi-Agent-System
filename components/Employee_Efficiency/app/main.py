@@ -811,6 +811,28 @@ def get_theme_css() -> str:
         transform: none !important;
     }}
 
+    [data-testid="stFormSubmitButton"] button {{
+        border: 1px solid #1d4ed8 !important;
+        border-radius: 0.5rem !important;
+        background: #1d4ed8 !important;
+        color: #ffffff !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-weight: 600 !important;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12) !important;
+    }}
+
+    [data-testid="stFormSubmitButton"] button *,
+    [data-testid="stFormSubmitButton"] button p {{
+        color: #ffffff !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }}
+
+    [data-testid="stFormSubmitButton"] button:hover {{
+        border-color: #1e40af !important;
+        background: #1e40af !important;
+        color: #ffffff !important;
+    }}
+
     [data-testid="stButton"] button {{
         border-radius: 0.5rem !important;
         background: #ffffff !important;
@@ -1476,7 +1498,28 @@ elif page == "Employee analysis":
             help="Search by employee ID, role, team, or employment status.",
         )
 
-    report = run_assessment(bundle, code, use_llm=False)
+    with st.form(key=f"assessment-context-form-{code}-{as_of}"):
+        st.markdown("### Add manager context to this assessment")
+        manager_factors = st.multiselect(
+            "Manager-reported context factors",
+            options=list(review.MANAGER_CONTEXT_FACTORS),
+            format_func=review.MANAGER_CONTEXT_FACTORS.get,
+            key=f"assessment-context-factors-{code}-{as_of}",
+        )
+        manager_note = st.text_area(
+            "Additional manager context (optional)",
+            placeholder="Add relevant work-related context that may help explain this reporting period...",
+            max_chars=2000,
+            key=f"assessment-context-note-{code}-{as_of}",
+        )
+        st.form_submit_button("Apply context and reassess", type="primary")
+
+    report = run_assessment(
+        bundle,
+        code,
+        manager_factors=manager_factors,
+        manager_note=manager_note,
+    )
     emp_meta = bundle.emp(code)
     render_manager_review(bundle, int(emp_meta["id"]), report)
 
@@ -1973,17 +2016,13 @@ elif page == "Review queue":
                 )
                 if row.summary:
                     st.info(f"**Diagnostic Summary:** {row.summary}")
-
+                action_key = f"act_{row.id}"
+                if action_key not in st.session_state:
+                    st.session_state[action_key] = "\n".join(row.actions)
                 edited_actions = st.text_area(
-                    "Calibrate Action Steps (one per line)",
-                    "\n".join(row.actions),
-                    key=f"act_{row.id}",
+                    "Review-adjusted action steps (one per line)",
+                    key=action_key,
                     height=120,
-                )
-                mgr_note = st.text_input(
-                    "Supervisory Review Note (optional)",
-                    key=f"note_{row.id}",
-                    placeholder="Enter management justification or review notes...",
                 )
 
                 col_appr, col_decl, _ = st.columns([1.5, 1.5, 5])
@@ -1999,13 +2038,12 @@ elif page == "Review queue":
                     review.decide(
                         row.id,
                         "modified" if is_modified else "approved",
-                        mgr_note,
-                        lines if is_modified else None,
+                        modified_actions=lines if is_modified else None,
                     )
                     st.rerun()
 
                 if col_decl.button("Decline Plan", key=f"dec_{row.id}"):
-                    review.decide(row.id, "rejected", mgr_note)
+                    review.decide(row.id, "rejected")
                     st.rerun()
 
 

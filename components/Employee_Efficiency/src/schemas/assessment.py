@@ -110,6 +110,8 @@ class AssessmentReport(BaseModel):
     trajectory: Trajectory
     deviation: DeviationResult
     context: ContextFindings
+    manager_context_factors: list[str] = Field(default_factory=list)
+    manager_context_note: str = ""
     diagnosis: Optional[Diagnosis] = None
     recommendations: list[RecommendationItem] = Field(default_factory=list)
     narrative: str = ""

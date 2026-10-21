@@ -93,8 +93,18 @@ uv run pytest -v
 uv run streamlit run app/main.py
 ```
 
-Optional LLM narration: set `OPENROUTER_API_KEY` in `.env`, then run `uv run python test_connection.py`.
-Narration receives only aggregated facts and pseudonymous employee codes. Raw feedback and row-level data remain local.
+Optional LLM narration: add your key to `OPENROUTER_API_KEY` in `.env` (and keep `USE_LLM=true`),
+then run `uv run python test_connection.py`. Individual employee assessments use the LLM when enabled;
+the workforce batch summary remains deterministic. Narration receives only aggregated facts and
+pseudonymous employee codes. Raw feedback and row-level data remain local.
+
+On Employee Performance Analysis, managers can also provide context before running an assessment.
+Each selected structured factor contributes 0.25 to its mapped rule-based cause score; reporting a
+data-quality concern withholds causal conclusions and recommends verifying the source data first.
+This never changes KPI values or overall performance scores. The free-text note is labeled
+manager-reported and can inform narration, but is not used as a numeric diagnosis signal. Assessment
+context is retained when a proposal is submitted to the review queue. Managers review or edit the
+resulting action plan there, while intervention tracking focuses on outcomes and scores.
 
 ## Data handling
 
