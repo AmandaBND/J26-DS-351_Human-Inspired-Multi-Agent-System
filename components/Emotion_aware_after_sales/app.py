@@ -26,6 +26,7 @@ from emotion_aware_after_sales.services.amc_decision_service import AMCDecisionS
 from emotion_aware_after_sales.services.egemaps_ser_service import EGeMAPSSERService
 from emotion_aware_after_sales.agents.orchestrator import AMCMultiAgentOrchestrator
 
+from emotion_aware_after_sales.services.speaker_role_review_service import render_speaker_role_review, clear_segment_review
 from emotion_aware_after_sales.services.voice_customer_service import VoiceCustomerService, reset_customer_context
 
 
@@ -273,44 +274,8 @@ def run_cached_diarization(audio_bytes: bytes, filename: str):
     audio = preprocess_bytes(audio_bytes, filename)
     turns = AutomaticDiarizationService(
         pipeline=load_diarization_model()
-    ).diarize(samples=audio.samples, sample_rate=audio.sample_rate, num_speakers=2)
+    ).diarize(samples=audio.samples, sample_rate=audio.sample_rate)
     return [(turn.start_seconds, turn.end_seconds, turn.speaker_id) for turn in turns]
-
-def smooth_short_speaker_turns(
-    turns,
-    max_duration=0.75,
-    max_gap=0.15,
-):
-    """
-    Correct short isolated speaker-label changes.
-    Only relabels a short turn if:
-    - Both neighboring turns belong to the same speaker.
-    - The short turn has a different speaker.
-    - Both gaps are small.
-    Returns a new list without modifying the original.
-    """
-    ordered = sorted(turns, key=lambda x: x[0])
-    corrected = list(ordered)
-    for i in range(1, len(ordered) - 1):
-        start, end, speaker = ordered[i]
-        prev_start, prev_end, prev_speaker = ordered[i - 1]
-        next_start, next_end, next_speaker = ordered[i + 1]
-        duration = end - start
-        gap_before = start - prev_end
-        gap_after = next_start - end
-        if (
-            duration <= max_duration
-            and prev_speaker == next_speaker
-            and speaker != prev_speaker
-            and 0 <= gap_before <= max_gap
-            and 0 <= gap_after <= max_gap
-        ):
-            corrected[i] = (
-                start,
-                end,
-                prev_speaker,
-            )
-    return corrected
 
 @st.cache_data(show_spinner=False)
 
@@ -329,28 +294,25 @@ def run_cached_role_identification(
         speaker
         for start, end, speaker in ordered_turns
     ))
-    if len(speakers) != 2:
-        raise ValueError(
-            f"Expected exactly 2 speakers, "
-            f"but detected {len(speakers)}. "
-            "Please review the diarization."
-        )
+    if not speakers:
+        raise ValueError("No speech was detected. Try another recording.")
+    # AMC calling prior: suggestions only; confirmed segment edits take precedence.
     agent_speaker = speakers[0]
-    customer_speaker = speakers[1]
-    role_mapping = {
-        agent_speaker: "Agent",
-        customer_speaker: "Customer",
-    }
+    customer_speaker = speakers[1] if len(speakers) > 1 else None
+    role_mapping = {speaker: "Unassigned" for speaker in speakers}
+    role_mapping[agent_speaker] = "Agent"
+    if customer_speaker is not None:
+        role_mapping[customer_speaker] = "Customer"
     evidence = {
         "method": "first_speaker_amc_prior",
+        "speakers_in_order": speakers,
         "agent_speaker": agent_speaker,
         "customer_speaker": customer_speaker,
         "requires_review": True,
         "explanation": (
-            "The first detected speaker is tentatively "
-            "assigned as Agent because Metropolitan "
-            "typically initiates AMC calls. "
-            "This is not voice-based role recognition."
+            "The first detected speaker is tentatively Agent under the AMC calling prior. "
+            "The second, when detected, is tentatively Customer. "
+            "These are suggestions, not voice-based role recognition."
         ),
     }
     return role_mapping, evidence, None
@@ -554,6 +516,7 @@ def render_voice():
             "review_agent_speaker",
         ):
             st.session_state.pop(key, None)
+        clear_segment_review(st.session_state)
         st.session_state["active_audio_identity"] = identity
 
     if uploaded_file is not None:
@@ -574,11 +537,11 @@ def render_voice():
         if uploaded_file is not None:
             st.subheader("Automatic Speaker Identification")
             st.caption(
-                "Two-speaker AMC calls. No agent reference "
+                "Detect voices, then review each segment. No agent reference "
                 "voice or transcription required."
             )
             if st.button(
-                "Detect Speakers and Identify Roles",
+                "Detect Speakers",
                 type="primary",
             ):
                 try:
@@ -590,16 +553,12 @@ def render_voice():
                             audio_bytes,
                             uploaded_file.name,
                         )
+                        # Retain exact raw timestamps and labels; never smooth away short replies.
                         detected_turns = list(raw_turns)
-                        for _ in range(3):
-                            updated_turns = smooth_short_speaker_turns(
-                                detected_turns,
-                                max_duration=0.75,
-                                max_gap=0.15,
-                            )
-                            if updated_turns == detected_turns:
-                                break
-                            detected_turns = updated_turns
+                        review_audio = preprocess_bytes(audio_bytes, uploaded_file.name)
+                        clear_segment_review(st.session_state)
+                        st.session_state["raw_speaker_turns"] = tuple(raw_turns)
+                        st.session_state["speaker_review_duration"] = len(review_audio.samples) / review_audio.sample_rate
                         role_mapping, evidence, margin = (
                             run_cached_role_identification(
                                 audio_bytes,
@@ -608,8 +567,8 @@ def render_voice():
                         )
                         rows = [
                             {
-                                "Start (s)": round(start, 2),
-                                "End (s)": round(end, 2),
+                                "Start (s)": float(start),
+                                "End (s)": float(end),
                                 "Detected Speaker": speaker,
                                 "Verified Role": role_mapping[speaker],
                             }
@@ -618,11 +577,7 @@ def render_voice():
                         st.session_state[
                             "speaker_review_turns"
                         ] = rows
-                        st.session_state[
-                            "verified_speaker_turns"
-                        ] = [
-                            dict(row) for row in rows
-                        ]
+                        st.session_state.pop("verified_speaker_turns", None)
                         st.session_state[
                             "role_scores"
                         ] = evidence
@@ -639,8 +594,8 @@ def render_voice():
                             "analysis_results", None
                         )
                     st.success(
-                        "Speakers detected and roles suggested. "
-                        "Please review the assignments below."
+                        "Speakers detected. Listen to the segments, "
+                        "assign roles, and confirm below."
                     )
                 except Exception as exc:
                     st.error(
@@ -651,99 +606,11 @@ def render_voice():
                 # SPEAKER ROLE REVIEW AND CONFIRMATION
 
         if st.session_state.get("speaker_review_turns"):
-            st.subheader("Review Speaker Roles")
-            rows = st.session_state["speaker_review_turns"]
-            # Get the unique speakers detected by pyannote
-            speaker_ids = list(dict.fromkeys(
-                row["Detected Speaker"]
-                for row in rows
-            ))
-            speaker_labels = {
-                speaker: f"Speaker {index + 1}"
-                for index, speaker in enumerate(speaker_ids)
-            }
-            evidence = st.session_state.get("role_scores", {})
-            # Explain how the roles were suggested
-            if isinstance(evidence, dict) and evidence.get("explanation"):
-                st.info(evidence["explanation"])
-            # Display the diarization results
-            display_rows = [
-                {**row, "Detected Speaker": speaker_labels[row["Detected Speaker"]]}
-                for row in rows
-            ]
-            st.dataframe(
-                display_rows,
-                hide_index=True,
-                use_container_width=True,
-            )
-            if len(speaker_ids) == 2:
-                suggested_agent = (
-                    evidence.get("agent_speaker", speaker_ids[0])
-                    if isinstance(evidence, dict)
-                    else speaker_ids[0]
-                )
-                if suggested_agent not in speaker_ids:
-                    suggested_agent = speaker_ids[0]
-                # User can correct the automatically suggested agent
-                selected_agent = st.selectbox(
-                    "Select the Service Agent",
-                    options=speaker_ids,
-                    format_func=speaker_labels.get,
-                    index=speaker_ids.index(suggested_agent),
-                    key="review_agent_speaker",
-                )
-                # The other speaker is automatically the customer
-                selected_customer = next(
-                    speaker
-                    for speaker in speaker_ids
-                    if speaker != selected_agent
-                )
-                st.write(f"**Agent:** {speaker_labels[selected_agent]}")
-                st.write(f"**Customer:** {speaker_labels[selected_customer]}")
-                # If selection changes, require reconfirmation
-                confirmed_agent = st.session_state.get(
-                    "confirmed_agent_speaker"
-                )
-                if selected_agent != confirmed_agent:
-                    st.session_state["role_review_confirmed"] = False
-                    st.session_state.pop("analysis_results", None)
-                    st.session_state.pop("verified_speaker_turns", None)
-                if st.button(
-                    "Confirm Speaker Roles",
-                    type="primary",
-                    key="confirm_speaker_roles",
-                ):
-                    role_mapping = {
-                        selected_agent: "Agent",
-                        selected_customer: "Customer",
-                    }
-                    # Apply the role consistently to every turn
-                    st.session_state["verified_speaker_turns"] = [
-                        {
-                            **row,
-                            "Verified Role": role_mapping[
-                                row["Detected Speaker"]
-                            ],
-                        }
-                        for row in rows
-                    ]
-                    st.session_state["confirmed_agent_speaker"] = (
-                        selected_agent
-                    )
-                    st.session_state["role_review_confirmed"] = True
-                    # Clear old emotion analysis results
-                    st.session_state.pop("analysis_results", None)
-                    st.success(
-                        "Speaker roles confirmed successfully. "
-                        "Customer emotion analysis is now ready."
-                    )
-                if st.session_state.get("role_review_confirmed", False):
-                    st.success("Speaker roles are verified.")
-            else:
-                st.warning(
-                    "Exactly two speakers are required for "
-                    "automatic Agent/Customer assignment."
-                )
+            # Evidence remains in role_scores/raw_speaker_turns; no blue explanation banner.
+            if "speaker_review_duration" not in st.session_state:
+                review_audio = preprocess_bytes(uploaded_file.getvalue(), uploaded_file.name)
+                st.session_state["speaker_review_duration"] = len(review_audio.samples) / review_audio.sample_rate
+            render_speaker_role_review(st)
 
         if (
             uploaded_file is not None
@@ -752,13 +619,13 @@ def render_voice():
             with st.expander("Listen to detected speaker segments"):
                 try:
                     review_audio = preprocess_bytes(uploaded_file.getvalue(), uploaded_file.name)
-                    for index, row in enumerate(st.session_state["speaker_review_turns"]):
+                    for index, row in enumerate(st.session_state.get("speaker_review_draft", st.session_state["speaker_review_turns"])):
                         start, end = float(row["Start (s)"]), float(row["End (s)"])
                         if end - start < 0.1:
                             continue
                         sr = review_audio.sample_rate
                         segment = review_audio.samples[int(start * sr):int(end * sr)]
-                        st.caption(f"Segment {index + 1}: {start:.1f}s–{end:.1f}s — {speaker_labels[row['Detected Speaker']]}")
+                        st.caption(f"Segment {index + 1}: {start:.1f}s–{end:.1f}s — {row['Detected Speaker']} · {row['Verified Role']}")
                         st.audio(segment, sample_rate=sr)
                 except Exception as exc:
                     st.warning(f"Could not play speaker segments: {exc}")
@@ -881,7 +748,7 @@ def render_voice():
                 {
                     "Start (s)": turn.start_seconds,
                     "End (s)": turn.end_seconds,
-                    "Speaker": speaker_labels.get(turn.speaker_id, "Speaker"),
+                    "Speaker": turn.speaker_id or "Speaker",
                     "Role": turn.role,
                 }
                 for turn in results["turns"]

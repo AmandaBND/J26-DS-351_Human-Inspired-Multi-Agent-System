@@ -15,7 +15,7 @@ class CustomerAudioSegment:
 
 
 class CustomerAudioService:
-    """Extract customer speech using diarization timestamps."""
+    """Extract customer speech using verified diarization timestamps."""
 
     def extract_customer_segments(
         self,
@@ -33,7 +33,8 @@ class CustomerAudioService:
         customer_segments = []
 
         for turn in speaker_turns:
-            if turn.role != "customer":
+            # Accept "Customer", "customer", or " CUSTOMER "
+            if str(turn.role).strip().casefold() != "customer":
                 continue
 
             start_index = max(

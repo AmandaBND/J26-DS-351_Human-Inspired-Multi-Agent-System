@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import hashlib
 
 from emotion_aware_after_sales.database.setup_database import get_connection
+from emotion_aware_after_sales.services.speaker_role_review_service import clear_segment_review
 
 
 ANALYSIS_KEYS = (
@@ -18,6 +19,7 @@ def reset_customer_context(state, context):
     if state.get('voice_customer_context') != context:
         for key in ANALYSIS_KEYS + ('customer_call_audio',):
             state.pop(key, None)
+        clear_segment_review(state)
         state['voice_customer_context'] = context
 
 
