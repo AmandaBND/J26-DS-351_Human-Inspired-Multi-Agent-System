@@ -15,6 +15,7 @@ from src.agents import context_agent, improvement_agent, performance_agent, tren
 from src.schemas.assessment import AssessmentReport
 from src.schemas.assessment import Checkpoint, ContextFindings, Trajectory
 from src.schemas.kpi import ROLE_LABELS, Phase, Role
+from src.services.assessment_context import apply_assessment_context, validate_manager_factors
 from src.services.data_access import DataBundle
 from src.services.llm_narrator import narrate
 from src.services.trajectory import determine_phase
@@ -23,6 +24,8 @@ from src.services.trajectory import determine_phase
 class AgentState(TypedDict, total=False):
     employee_code: str
     use_llm: Optional[bool]
+    manager_factors: list[str]
+    manager_note: str
     emp_id: int
     role: str
     perf: dict
@@ -50,6 +53,11 @@ def build_graph(bundle: DataBundle):
 
     def diagnosis_and_planning(state: AgentState) -> AgentState:
         diag, recs = improvement_agent.plan(state["trend"]["deviation"], state["context"])
+        factors = state.get("manager_factors", [])
+        if factors:
+            diag, recs = apply_assessment_context(
+                state["trend"]["deviation"], diag, factors
+            )
         return {"diagnosis": diag, "recommendations": recs}
 
     def narrate_node(state: AgentState) -> AgentState:
@@ -60,6 +68,8 @@ def build_graph(bundle: DataBundle):
             employee_code=state["employee_code"], role=ROLE_LABELS[Role(state["role"])], as_of=bundle.as_of,
             phase=phase, overall_score=p["overall_score"], category_scores=p["category_scores"], kpis=p["kpis"],
             trajectory=t["trajectory"], deviation=t["deviation"], context=state["context"],
+            manager_context_factors=state.get("manager_factors", []),
+            manager_context_note=state.get("manager_note", ""),
             diagnosis=state.get("diagnosis"), recommendations=state.get("recommendations", []),
             data_through=bundle.data_through[state["emp_id"]],
             data_note=("Complete employee data is available through " + bundle.data_through[state["emp_id"]] + ". "
@@ -86,9 +96,13 @@ def build_graph(bundle: DataBundle):
     return g.compile()
 
 
-def run_assessment(bundle: DataBundle, employee_code: str, use_llm: Optional[bool] = False,
-                   graph=None) -> AssessmentReport:
+def run_assessment(bundle: DataBundle, employee_code: str, use_llm: Optional[bool] = None,
+                   graph=None, manager_factors: Optional[list[str]] = None,
+                   manager_note: str = "") -> AssessmentReport:
     """Run an employee assessment, withholding diagnosis when data is insufficient."""
+    manager_factors = validate_manager_factors(manager_factors or [])
+    if len(manager_note) > 2000:
+        raise ValueError("Manager context note must be 2000 characters or fewer")
     employee_id = int(bundle.emp(employee_code)["id"])
     if bundle.insufficient_data.get(employee_id, False):
         role = Role(bundle.emp(employee_code)["role"])
@@ -130,6 +144,8 @@ def run_assessment(bundle: DataBundle, employee_code: str, use_llm: Optional[boo
                 feedback_tags={},
                 peer_deviation_share=0.0,
             ),
+            manager_context_factors=manager_factors,
+            manager_context_note=manager_note,
             data_through=through,
             insufficient_data=True,
             insufficient_reason=reason,
@@ -142,7 +158,12 @@ def run_assessment(bundle: DataBundle, employee_code: str, use_llm: Optional[boo
         )
         return report
     graph = graph or build_graph(bundle)
-    return graph.invoke({"employee_code": employee_code, "use_llm": use_llm})["report"]
+    return graph.invoke({
+        "employee_code": employee_code,
+        "use_llm": use_llm,
+        "manager_factors": manager_factors,
+        "manager_note": manager_note,
+    })["report"]
 
 
 def run_team(bundle: DataBundle) -> list[AssessmentReport]:

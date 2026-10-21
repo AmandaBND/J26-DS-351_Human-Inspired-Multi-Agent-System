@@ -82,6 +82,10 @@ class Recommendation(Base):
     diagnosis_summary: Mapped[str] = mapped_column(Text, default="")
     status: Mapped[str] = mapped_column(String(12), default="pending")  # pending/approved/modified/rejected
     reviewer_note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    manager_factors: Mapped[str] = mapped_column(Text, default="[]")
+    review_context_summary: Mapped[str] = mapped_column(Text, default="")
+    assessment_context_factors: Mapped[str] = mapped_column(Text, default="[]")
+    assessment_context_note: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None))
     decided_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
@@ -148,6 +152,12 @@ _SQLITE_COLUMN_MIGRATIONS = {
     "context_records": {
         "parts_wait_share": "FLOAT NOT NULL DEFAULT 0.0",
         "incomplete_input_share": "FLOAT NOT NULL DEFAULT 0.0",
+    },
+    "recommendations": {
+        "manager_factors": "TEXT NOT NULL DEFAULT '[]'",
+        "review_context_summary": "TEXT NOT NULL DEFAULT ''",
+        "assessment_context_factors": "TEXT NOT NULL DEFAULT '[]'",
+        "assessment_context_note": "TEXT NOT NULL DEFAULT ''",
     },
 }
 
